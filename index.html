@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Wish Story</title>
+  <style>
+    :root {
+      --bg1: #fff0f5;
+      --bg2: #ffe4e1;
+      --card: rgba(255, 255, 255, 0.75);
+      --pink: #ff4d8d;
+      --pink-dark: #d92d75;
+      --purple: #9b5de5;
+      --gold: #ffd166;
+      --text: #3a2340;
+      --shadow: 0 20px 45px rgba(170, 76, 124, 0.22);
+      --border: rgba(255, 255, 255, 0.7);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 18px;
+    }
+
+    .container {
+      width: min(100%, 980px);
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 0 0 20px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--pink-dark);
+      text-shadow: 0 2px 8px rgba(255, 77, 141, 0.18);
+    }
+
+    .upload-panel {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    textarea, input[type="file"] {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(155, 93, 229, 0.2);
+      background: rgba(255,255,255,0.6);
+      padding: 14px 16px;
+      font-size: 1rem;
+      color: var(--text);
+      outline: none;
+      transition: 0.25s ease;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input[type="file"] {
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+
+    textarea:focus, input[type="file"]:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 4px rgba(255, 77, 141, 0.08);
+    }
+
+    .helper {
+      font-size: 0.88rem;
+      color: #6c4d69;
+      margin-top: -2px;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 26px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(155, 93, 229, 0.18);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 24px rgba(155, 93, 229, 0.2);
+    }
+
+    .story-wrap {
+      display: none;
+      margin-top: 28px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .story-wrap.active {
+      display: block;
+    }
+
+    .story-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .story-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--pink-dark);
+    }
+
+    .progress {
+      flex: 1;
+      min-width: 150px;
+      height: 12px;
+      background: rgba(155, 93, 229, 0.12);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--pink));
+      border-radius: inherit;
+      transition: width 0.35s ease;
+    }
+
+    .story-card {
+      min-height: 420px;
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .story-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(255, 209, 102, 0.35), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(255, 77, 141, 0.18), transparent 35%);
+      pointer-events: none;
+    }
+
+    .item-note,
+    .item-image,
+    .item-video {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .item-note {
+      flex-direction: column;
+      gap: 12px;
+      padding: 30px 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #fff5cf;
+      color: #7c5d00;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .note-text {
+      font-size: clamp(1.3rem, 2.8vw, 2.2rem);
+      line-height: 1.5;
+      font-weight: 700;
+      color: var(--text);
+      max-width: 760px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .item-image img {
+      width: 100%;
+      max-height: 480px;
+      object-fit: cover;
+      border-radius: 18px;
+      box-shadow: 0 20px 30px rgba(110, 78, 129, 0.18);
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .item-video video {
+      width: 100%;
+      max-height: 480px;
+      border-radius: 18px;
+      background: #000;
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 0 20px 30px rgba(110, 78, 129, 0.18);
+    }
+
+    .story-controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .secondary-btn {
+      background: rgba(255,255,255,0.55);
+      color: var(--text);
+      border: 1px solid rgba(155, 93, 229, 0.15);
+      box-shadow: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 20px 14px;
+      }
+
+      .story-header {
+        align-items: flex-start;
+      }
+
+      .story-card {
+        min-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Birthday Wishes</h1>
+
+    <form id="storyForm" class="upload-panel">
+      <div class="field">
+        <label for="wishNote">Birthday Wish Note</label>
+        <textarea id="wishNote" placeholder="Happy Birthday! You are my sunshine..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="photoInput">Upload Photos</label>
+        <input id="photoInput" type="file" accept="image/*" multiple />
+        <div class="helper">Select one or more photos.</div>
+      </div>
+
+      <div class="field">
+        <label for="videoInput">Upload Video (max 60 MB)</label>
+        <input id="videoInput" type="file" accept="video/*" />
+        <div class="helper">Only one video is allowed. Max size: 60MB.</div>
+      </div>
+
+      <div class="button-row">
+        <button type="submit">Create Birthday Story</button>
+      </div>
+    </form>
+
+    <div id="storyViewer" class="story-wrap">
+      <div class="story-header">
+        <div class="story-title">Your Birthday Story</div>
+        <div class="progress">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+      </div>
+
+      <div id="storyCard" class="story-card"></div>
+
+      <div class="story-controls">
+        <button id="prevBtn" class="secondary-btn" type="button">Previous</button>
+        <button id="nextBtn" type="button">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const storyForm = document.getElementById("storyForm");
+    const wishNote = document.getElementById("wishNote");
+    const photoInput = document.getElementById("photoInput");
+    const videoInput = document.getElementById("videoInput");
+    const storyViewer = document.getElementById("storyViewer");
+    const storyCard = document.getElementById("storyCard");
+    const progressBar = document.getElementById("progressBar");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    const MAX_VIDEO_SIZE = 60 * 1024 * 1024;
+    let storyItems = [];
+    let currentIndex = 0;
+    let autoAdvanceTimer = null;
+
+    function clearAutoAdvance() {
+      if (autoAdvanceTimer) {
+        clearTimeout(autoAdvanceTimer);
+        autoAdvanceTimer = null;
+      }
+    }
+
+    function validateVideo(file) {
+      if (!file) return true;
+      if (file.size > MAX_VIDEO_SIZE) {
+        alert("Video is too large. Please upload a video of 60MB or less.");
+        return false;
+      }
+      return true;
+    }
+
+    function buildStory() {
+      const noteText = wishNote.value.trim();
+      const photoFiles = Array.from(photoInput.files || []);
+      const videoFile = videoInput.files[0];
+
+      if (!noteText && photoFiles.length === 0 && !videoFile) {
+        alert("Please add a note, at least one photo, or a video.");
+        return;
+      }
+
+      if (videoFile && !validateVideo(videoFile)) {
+        return;
+      }
+
+      const items = [];
+
+      if (noteText) {
+        items.push({
+          type: "note",
+          content: noteText
+        });
+      }
+
+      photoFiles.forEach((file) => {
+        const url = URL.createObjectURL(file);
+        items.push({
+          type: "image",
+          content: url
+        });
+      });
+
+      if (videoFile) {
+        const url = URL.createObjectURL(videoFile);
+        items.push({
+          type: "video",
+          content: url
+        });
+      }
+
+      if (items.length === 0) {
+        alert("No content found. Please add a note or upload files.");
+        return;
+      }
+
+      storyItems = items;
+      currentIndex = 0;
+      storyViewer.classList.add("active");
+      renderCurrentItem();
+    }
+
+    function renderCurrentItem() {
+      const item = storyItems[currentIndex];
+      if (!item) return;
+
+      clearAutoAdvance();
+
+      if (item.type === "note") {
+        storyCard.innerHTML = `
+          <div class="item-note">
+            <span class="tag">Birthday Note</span>
+            <div class="note-text">${escapeHtml(item.content)}</div>
+          </div>
+        `;
+        autoAdvanceTimer = setTimeout(() => {
+          if (currentIndex < storyItems.length - 1) {
+            currentIndex += 1;
+            renderCurrentItem();
+          }
+        }, 5000);
+      }
+
+      if (item.type === "image") {
+        storyCard.innerHTML = `
+          <div class="item-image">
+            <img src="${item.content}" alt="Birthday memory" />
+          </div>
+        `;
+        autoAdvanceTimer = setTimeout(() => {
+          if (currentIndex < storyItems.length - 1) {
+            currentIndex += 1;
+            renderCurrentItem();
+          }
+        }, 4500);
+      }
+
+      if (item.type === "video") {
+        storyCard.innerHTML = `
+          <div class="item-video">
+            <video controls autoplay playsinline muted>
+              <source src="${item.content}" type="video/mp4">
+            </video>
+          </div>
+        `;
+      }
+
+      updateProgress();
+      updateButtons();
+    }
+
+    function updateProgress() {
+      const percent = ((currentIndex + 1) / storyItems.length) * 100;
+      progressBar.style.width = `${percent}%`;
+    }
+
+    function updateButtons() {
+      prevBtn.disabled = currentIndex === 0;
+      prevBtn.style.opacity = currentIndex === 0 ? "0.4" : "1";
+      prevBtn.style.cursor = currentIndex === 0 ? "not-allowed" : "pointer";
+
+      if (currentIndex === storyItems.length - 1) {
+        nextBtn.textContent = "Replay Story";
+      } else {
+        nextBtn.textContent = "Next";
+      }
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    prevBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex -= 1;
+        renderCurrentItem();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < storyItems.length - 1) {
+        currentIndex += 1;
+        renderCurrentItem();
+      } else {
+        currentIndex = 0;
+        renderCurrentItem();
+      }
+    });
+
+    storyForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      buildStory();
+    });
+  </script>
+</body>
+</html>
