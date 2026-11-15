@@ -3,512 +3,453 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Birthday Wish Story</title>
+  <title>Birthday Surprise</title>
   <style>
     :root {
-      --bg1: #fff0f5;
-      --bg2: #ffe4e1;
-      --card: rgba(255, 255, 255, 0.75);
-      --pink: #ff4d8d;
-      --pink-dark: #d92d75;
-      --purple: #9b5de5;
-      --gold: #ffd166;
-      --text: #3a2340;
-      --shadow: 0 20px 45px rgba(170, 76, 124, 0.22);
-      --border: rgba(255, 255, 255, 0.7);
+      --pink: #f04f88;
+      --purple: #8456d8;
+      --ink: #392943;
+      --soft-pink: #fff0f5;
+      --soft-purple: #f1eaff;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
       min-height: 100vh;
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px 18px;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, var(--soft-pink), var(--soft-purple));
     }
 
-    .container {
-      width: min(100%, 980px);
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+    .app {
+      width: min(760px, 100%);
+      padding: clamp(22px, 5vw, 42px);
+      border: 1px solid rgba(255,255,255,.8);
       border-radius: 28px;
-      box-shadow: var(--shadow);
-      padding: 28px;
+      background: rgba(255,255,255,.78);
+      box-shadow: 0 20px 60px rgba(90, 53, 112, .16);
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .welcome {
+      min-height: 390px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .emoji {
+      font-size: clamp(4rem, 12vw, 7rem);
+      margin-bottom: 12px;
+      animation: bob 2s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      50% { transform: translateY(-10px) rotate(3deg); }
     }
 
     h1 {
-      text-align: center;
-      margin: 0 0 20px;
-      font-size: clamp(2rem, 4vw, 3rem);
-      color: var(--pink-dark);
-      text-shadow: 0 2px 8px rgba(255, 77, 141, 0.18);
+      margin: 0 0 12px;
+      color: #d63778;
+      font-size: clamp(2rem, 6vw, 3.4rem);
     }
 
-    .upload-panel {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 18px;
-    }
+    h2 { margin: 0 0 10px; color: #d63778; }
+    p { line-height: 1.6; }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .muted { color: #705f76; }
+
+    .field { margin: 22px 0; }
 
     label {
+      display: block;
+      margin-bottom: 9px;
       font-weight: 700;
-      color: var(--text);
     }
 
     textarea, input[type="file"] {
       width: 100%;
-      border-radius: 16px;
-      border: 1px solid rgba(155, 93, 229, 0.2);
-      background: rgba(255,255,255,0.6);
-      padding: 14px 16px;
-      font-size: 1rem;
-      color: var(--text);
-      outline: none;
-      transition: 0.25s ease;
+      padding: 14px;
+      border: 1px solid #e4d7ed;
+      border-radius: 14px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
     }
 
     textarea {
-      min-height: 130px;
+      min-height: 125px;
       resize: vertical;
     }
 
-    input[type="file"] {
-      padding: 12px 14px;
-      cursor: pointer;
+    input[type="file"] { cursor: pointer; }
+
+    .hint {
+      margin: 8px 0 0;
+      font-size: .9rem;
+      color: #705f76;
     }
 
-    textarea:focus, input[type="file"]:focus {
-      border-color: var(--pink);
-      box-shadow: 0 0 0 4px rgba(255, 77, 141, 0.08);
+    .file-list {
+      margin: 8px 0 0;
+      color: #705f76;
+      font-size: .9rem;
+      overflow-wrap: anywhere;
     }
 
-    .helper {
-      font-size: 0.88rem;
-      color: #6c4d69;
-      margin-top: -2px;
-    }
-
-    .button-row {
+    .actions {
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
-      margin-top: 8px;
+      gap: 12px;
+      margin-top: 24px;
     }
 
     button {
-      border: none;
+      padding: 13px 22px;
+      border: 0;
       border-radius: 999px;
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      color: white;
+      color: #fff;
+      background: linear-gradient(110deg, var(--pink), var(--purple));
+      font: inherit;
       font-weight: 700;
-      font-size: 1rem;
-      padding: 14px 26px;
       cursor: pointer;
-      box-shadow: 0 10px 20px rgba(155, 93, 229, 0.18);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 8px 18px rgba(132, 86, 216, .2);
+      transition: transform .18s ease;
     }
 
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 24px rgba(155, 93, 229, 0.2);
-    }
+    button:hover { transform: translateY(-2px); }
 
-    .story-wrap {
-      display: none;
-      margin-top: 28px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 26px;
-      padding: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    .story-wrap.active {
-      display: block;
-    }
-
-    .story-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .story-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--pink-dark);
-    }
-
-    .progress {
-      flex: 1;
-      min-width: 150px;
-      height: 12px;
-      background: rgba(155, 93, 229, 0.12);
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-bar {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--pink));
-      border-radius: inherit;
-      transition: width 0.35s ease;
-    }
-
-    .story-card {
-      min-height: 420px;
-      background: rgba(255,255,255,0.5);
-      border: 1px solid rgba(255,255,255,0.7);
-      border-radius: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 22px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .story-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at top left, rgba(255, 209, 102, 0.35), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(255, 77, 141, 0.18), transparent 35%);
-      pointer-events: none;
-    }
-
-    .item-note,
-    .item-image,
-    .item-video {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .item-note {
-      flex-direction: column;
-      gap: 12px;
-      padding: 30px 12px;
-    }
-
-    .tag {
-      display: inline-block;
-      background: #fff5cf;
-      color: #7c5d00;
-      border-radius: 999px;
-      padding: 8px 16px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .note-text {
-      font-size: clamp(1.3rem, 2.8vw, 2.2rem);
-      line-height: 1.5;
-      font-weight: 700;
-      color: var(--text);
-      max-width: 760px;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .item-image img {
-      width: 100%;
-      max-height: 480px;
-      object-fit: cover;
-      border-radius: 18px;
-      box-shadow: 0 20px 30px rgba(110, 78, 129, 0.18);
-      border: 1px solid rgba(255,255,255,0.8);
-    }
-
-    .item-video video {
-      width: 100%;
-      max-height: 480px;
-      border-radius: 18px;
-      background: #000;
-      border: 1px solid rgba(255,255,255,0.8);
-      box-shadow: 0 20px 30px rgba(110, 78, 129, 0.18);
-    }
-
-    .story-controls {
-      display: flex;
-      justify-content: center;
-      margin-top: 18px;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .secondary-btn {
-      background: rgba(255,255,255,0.55);
-      color: var(--text);
-      border: 1px solid rgba(155, 93, 229, 0.15);
+    button.secondary {
+      color: var(--ink);
+      background: #f4edf8;
       box-shadow: none;
     }
 
-    .hidden {
-      display: none !important;
+    .story-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
     }
 
-    @media (max-width: 640px) {
-      .container {
-        padding: 20px 14px;
-      }
+    .progress {
+      height: 10px;
+      flex: 1;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #eadff0;
+    }
 
-      .story-header {
-        align-items: flex-start;
-      }
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #ffc857, var(--pink));
+      transition: width .3s ease;
+    }
 
-      .story-card {
-        min-height: 300px;
-      }
+    .story-card {
+      min-height: 360px;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at top left, #fff4ce, transparent 38%),
+        linear-gradient(135deg, #fff8fb, #f8f2ff);
+      overflow: hidden;
+    }
+
+    .story-card img, .story-card video {
+      display: block;
+      width: 100%;
+      max-height: 65vh;
+      object-fit: contain;
+      border-radius: 14px;
+    }
+
+    .story-note {
+      max-width: 650px;
+      text-align: center;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: clamp(1.35rem, 4vw, 2.2rem);
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .story-label {
+      margin-bottom: 14px;
+      color: #d63778;
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .error {
+      min-height: 1.2em;
+      color: #b42345;
+      font-size: .92rem;
+    }
+
+    @media (max-width: 540px) {
+      body { padding: 12px; }
+      .story-card { min-height: 280px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Birthday Wishes</h1>
+  <main class="app">
+    <!-- Welcome page -->
+    <section id="welcomePage" class="page active">
+      <div class="welcome">
+        <div class="emoji" aria-hidden="true">🎂🎈</div>
+        <h1>A Birthday Surprise</h1>
+        <p class="muted">Make a special birthday story with your message, photos, and video.</p>
+        <div class="actions">
+          <button id="goToUpload" type="button">Go to the next →</button>
+        </div>
+      </div>
+    </section>
 
-    <form id="storyForm" class="upload-panel">
+    <!-- Upload page -->
+    <section id="uploadPage" class="page">
+      <h2>Create the birthday story</h2>
+      <p class="muted">Add a birthday note, choose your photos, and optionally add one video.</p>
+
       <div class="field">
-        <label for="wishNote">Birthday Wish Note</label>
-        <textarea id="wishNote" placeholder="Happy Birthday! You are my sunshine..."></textarea>
+        <label for="wishNote">Birthday wish note</label>
+        <textarea id="wishNote" placeholder="Happy Birthday! Wishing you a wonderful day..."></textarea>
       </div>
 
       <div class="field">
-        <label for="photoInput">Upload Photos</label>
+        <label for="photoInput">Photos</label>
         <input id="photoInput" type="file" accept="image/*" multiple />
-        <div class="helper">Select one or more photos.</div>
+        <p id="photoNames" class="file-list">No photos selected.</p>
       </div>
 
       <div class="field">
-        <label for="videoInput">Upload Video (max 60 MB)</label>
+        <label for="videoInput">One video (maximum 60 MB)</label>
         <input id="videoInput" type="file" accept="video/*" />
-        <div class="helper">Only one video is allowed. Max size: 60MB.</div>
+        <p id="videoName" class="file-list">No video selected.</p>
+        <p class="hint">Your video and photos are shown after the birthday note.</p>
       </div>
 
-      <div class="button-row">
-        <button type="submit">Create Birthday Story</button>
-      </div>
-    </form>
+      <p id="errorMessage" class="error" role="alert"></p>
 
-    <div id="storyViewer" class="story-wrap">
-      <div class="story-header">
-        <div class="story-title">Your Birthday Story</div>
-        <div class="progress">
+      <div class="actions">
+        <button id="backToWelcome" class="secondary" type="button">← Back</button>
+        <button id="buildStory" type="button">Build Birthday Story 🎉</button>
+      </div>
+    </section>
+
+    <!-- Story page -->
+    <section id="storyPage" class="page">
+      <div class="story-top">
+        <strong id="storyCount">Birthday Story</strong>
+        <div class="progress" aria-label="Story progress">
           <div id="progressBar" class="progress-bar"></div>
         </div>
       </div>
 
       <div id="storyCard" class="story-card"></div>
 
-      <div class="story-controls">
-        <button id="prevBtn" class="secondary-btn" type="button">Previous</button>
-        <button id="nextBtn" type="button">Next</button>
+      <div class="actions">
+        <button id="previousBtn" class="secondary" type="button">← Previous</button>
+        <button id="nextBtn" type="button">Next →</button>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <script>
-    const storyForm = document.getElementById("storyForm");
+    const welcomePage = document.getElementById("welcomePage");
+    const uploadPage = document.getElementById("uploadPage");
+    const storyPage = document.getElementById("storyPage");
+
     const wishNote = document.getElementById("wishNote");
     const photoInput = document.getElementById("photoInput");
     const videoInput = document.getElementById("videoInput");
-    const storyViewer = document.getElementById("storyViewer");
+    const photoNames = document.getElementById("photoNames");
+    const videoName = document.getElementById("videoName");
+    const errorMessage = document.getElementById("errorMessage");
+
     const storyCard = document.getElementById("storyCard");
+    const storyCount = document.getElementById("storyCount");
     const progressBar = document.getElementById("progressBar");
-    const prevBtn = document.getElementById("prevBtn");
+    const previousBtn = document.getElementById("previousBtn");
     const nextBtn = document.getElementById("nextBtn");
 
     const MAX_VIDEO_SIZE = 60 * 1024 * 1024;
-    let storyItems = [];
+    let items = [];
     let currentIndex = 0;
     let autoAdvanceTimer = null;
+    let objectUrls = [];
 
-    function clearAutoAdvance() {
+    function showPage(page) {
+      [welcomePage, uploadPage, storyPage].forEach((section) => {
+        section.classList.remove("active");
+      });
+      page.classList.add("active");
+    }
+
+    document.getElementById("goToUpload").addEventListener("click", () => {
+      showPage(uploadPage);
+    });
+
+    document.getElementById("backToWelcome").addEventListener("click", () => {
+      showPage(welcomePage);
+    });
+
+    photoInput.addEventListener("change", () => {
+      const files = Array.from(photoInput.files || []);
+      photoNames.textContent = files.length
+        ? files.map(file => file.name).join(", ")
+        : "No photos selected.";
+      errorMessage.textContent = "";
+    });
+
+    videoInput.addEventListener("change", () => {
+      const file = videoInput.files[0];
+      videoName.textContent = file ? file.name : "No video selected.";
+      errorMessage.textContent = "";
+
+      if (file && file.size > MAX_VIDEO_SIZE) {
+        errorMessage.textContent = "The video is larger than 60 MB. Please choose a smaller video.";
+        videoInput.value = "";
+        videoName.textContent = "No video selected.";
+      }
+    });
+
+    function clearTimer() {
       if (autoAdvanceTimer) {
         clearTimeout(autoAdvanceTimer);
         autoAdvanceTimer = null;
       }
     }
 
-    function validateVideo(file) {
-      if (!file) return true;
-      if (file.size > MAX_VIDEO_SIZE) {
-        alert("Video is too large. Please upload a video of 60MB or less.");
-        return false;
-      }
-      return true;
-    }
-
     function buildStory() {
-      const noteText = wishNote.value.trim();
-      const photoFiles = Array.from(photoInput.files || []);
-      const videoFile = videoInput.files[0];
+      errorMessage.textContent = "";
+      const note = wishNote.value.trim();
+      const photos = Array.from(photoInput.files || []);
+      const video = videoInput.files[0];
 
-      if (!noteText && photoFiles.length === 0 && !videoFile) {
-        alert("Please add a note, at least one photo, or a video.");
+      if (video && video.size > MAX_VIDEO_SIZE) {
+        errorMessage.textContent = "The video is larger than 60 MB. Please choose a smaller video.";
         return;
       }
 
-      if (videoFile && !validateVideo(videoFile)) {
+      if (!note && photos.length === 0 && !video) {
+        errorMessage.textContent = "Add a note, at least one photo, or a video to build your story.";
         return;
       }
 
-      const items = [];
+      clearTimer();
+      objectUrls.forEach(URL.revokeObjectURL);
+      objectUrls = [];
+      items = [];
 
-      if (noteText) {
-        items.push({
-          type: "note",
-          content: noteText
-        });
-      }
+      if (note) items.push({ type: "note", content: note });
 
-      photoFiles.forEach((file) => {
+      photos.forEach((file) => {
         const url = URL.createObjectURL(file);
-        items.push({
-          type: "image",
-          content: url
-        });
+        objectUrls.push(url);
+        items.push({ type: "image", content: url });
       });
 
-      if (videoFile) {
-        const url = URL.createObjectURL(videoFile);
-        items.push({
-          type: "video",
-          content: url
-        });
+      if (video) {
+        const url = URL.createObjectURL(video);
+        objectUrls.push(url);
+        items.push({ type: "video", content: url });
       }
 
-      if (items.length === 0) {
-        alert("No content found. Please add a note or upload files.");
-        return;
-      }
-
-      storyItems = items;
       currentIndex = 0;
-      storyViewer.classList.add("active");
-      renderCurrentItem();
+      showPage(storyPage);
+      renderItem();
     }
 
-    function renderCurrentItem() {
-      const item = storyItems[currentIndex];
+    function renderItem() {
+      clearTimer();
+      storyCard.replaceChildren();
+
+      const item = items[currentIndex];
       if (!item) return;
 
-      clearAutoAdvance();
-
       if (item.type === "note") {
-        storyCard.innerHTML = `
-          <div class="item-note">
-            <span class="tag">Birthday Note</span>
-            <div class="note-text">${escapeHtml(item.content)}</div>
-          </div>
-        `;
-        autoAdvanceTimer = setTimeout(() => {
-          if (currentIndex < storyItems.length - 1) {
-            currentIndex += 1;
-            renderCurrentItem();
-          }
-        }, 5000);
-      }
+        const wrapper = document.createElement("div");
+        const label = document.createElement("div");
+        const note = document.createElement("div");
 
-      if (item.type === "image") {
-        storyCard.innerHTML = `
-          <div class="item-image">
-            <img src="${item.content}" alt="Birthday memory" />
-          </div>
-        `;
-        autoAdvanceTimer = setTimeout(() => {
-          if (currentIndex < storyItems.length - 1) {
-            currentIndex += 1;
-            renderCurrentItem();
-          }
-        }, 4500);
-      }
+        label.className = "story-label";
+        label.textContent = "Birthday wish";
+        note.className = "story-note";
+        note.textContent = item.content;
 
-      if (item.type === "video") {
-        storyCard.innerHTML = `
-          <div class="item-video">
-            <video controls autoplay playsinline muted>
-              <source src="${item.content}" type="video/mp4">
-            </video>
-          </div>
-        `;
-      }
-
-      updateProgress();
-      updateButtons();
-    }
-
-    function updateProgress() {
-      const percent = ((currentIndex + 1) / storyItems.length) * 100;
-      progressBar.style.width = `${percent}%`;
-    }
-
-    function updateButtons() {
-      prevBtn.disabled = currentIndex === 0;
-      prevBtn.style.opacity = currentIndex === 0 ? "0.4" : "1";
-      prevBtn.style.cursor = currentIndex === 0 ? "not-allowed" : "pointer";
-
-      if (currentIndex === storyItems.length - 1) {
-        nextBtn.textContent = "Replay Story";
+        wrapper.append(label, note);
+        storyCard.appendChild(wrapper);
+        scheduleAdvance(5000);
+      } else if (item.type === "image") {
+        const image = document.createElement("img");
+        image.src = item.content;
+        image.alt = "Birthday memory";
+        storyCard.appendChild(image);
+        scheduleAdvance(4500);
       } else {
-        nextBtn.textContent = "Next";
+        const video = document.createElement("video");
+        video.src = item.content;
+        video.controls = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.addEventListener("ended", advance);
+        storyCard.appendChild(video);
+      }
+
+      storyCount.textContent = `Birthday Story · ${currentIndex + 1} of ${items.length}`;
+      progressBar.style.width = `${((currentIndex + 1) / items.length) * 100}%`;
+      previousBtn.disabled = currentIndex === 0;
+      previousBtn.style.opacity = currentIndex === 0 ? ".5" : "1";
+      nextBtn.textContent = currentIndex === items.length - 1 ? "Start again ↻" : "Next →";
+    }
+
+    function scheduleAdvance(delay) {
+      if (currentIndex < items.length - 1) {
+        autoAdvanceTimer = setTimeout(advance, delay);
       }
     }
 
-    function escapeHtml(str) {
-      return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    function advance() {
+      if (currentIndex < items.length - 1) {
+        currentIndex++;
+        renderItem();
+      }
     }
 
-    prevBtn.addEventListener("click", () => {
+    document.getElementById("buildStory").addEventListener("click", buildStory);
+
+    previousBtn.addEventListener("click", () => {
       if (currentIndex > 0) {
-        currentIndex -= 1;
-        renderCurrentItem();
+        currentIndex--;
+        renderItem();
       }
     });
 
     nextBtn.addEventListener("click", () => {
-      if (currentIndex < storyItems.length - 1) {
-        currentIndex += 1;
-        renderCurrentItem();
+      if (currentIndex < items.length - 1) {
+        advance();
       } else {
         currentIndex = 0;
-        renderCurrentItem();
+        renderItem();
       }
-    });
-
-    storyForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      buildStory();
     });
   </script>
 </body>
