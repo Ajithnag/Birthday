@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Birthday Story</title>
+  <title>A Birthday Surprise</title>
   <style>
     :root {
-      --pink: #f04f88;
-      --purple: #8456d8;
-      --ink: #392943;
-      --soft-pink: #fff0f5;
-      --soft-purple: #f1eaff;
-      --card: rgba(255, 255, 255, 0.8);
-      --muted: #6f5b76;
-      --warning: #c93a5e;
+      --pink: #e94d87;
+      --purple: #8056c7;
+      --text: #382842;
+      --muted: #705f76;
+      --background: #fff3f7;
+      --card: #ffffff;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -24,465 +24,263 @@
       padding: 24px;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, var(--soft-pink), var(--soft-purple));
-      color: var(--ink);
+      color: var(--text);
       font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #fff0f5, #f1eaff);
     }
 
-    .app {
-      width: min(820px, 100%);
-      min-height: 580px;
-      padding: clamp(18px, 4vw, 40px);
-      border-radius: 28px;
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,0.7);
+    .card {
+      width: min(850px, 100%);
+      padding: clamp(22px, 5vw, 42px);
+      border: 1px solid rgba(255, 255, 255, .9);
+      border-radius: 26px;
+      background: rgba(255, 255, 255, .88);
       box-shadow: 0 20px 60px rgba(90, 53, 112, .16);
-    }
-
-    .page { display: none; }
-    .page.active { display: block; }
-
-    .welcome {
-      min-height: 420px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
       text-align: center;
     }
 
-    .cake {
-      font-size: clamp(5rem, 16vw, 9rem);
-      animation: bounce 1.5s ease-in-out infinite;
-      margin-bottom: 18px;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    h2 {
-      margin: 0 0 14px;
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
+    h1 {
+      margin: 0 0 12px;
       color: var(--pink);
+      font-size: clamp(2rem, 6vw, 3rem);
     }
 
-    .upload-title {
-      margin-bottom: 10px;
-      color: var(--pink);
-      font-size: clamp(1.5rem, 5vw, 2.4rem);
-    }
-
-    .sub {
-      color: var(--muted);
+    p {
       line-height: 1.6;
-      margin: 0 0 18px;
     }
 
-    .field {
-      margin: 18px 0;
+    .muted {
+      color: var(--muted);
+    }
+
+    .page[hidden] {
+      display: none;
+    }
+
+    .birthday-form {
+      width: min(420px, 100%);
+      margin: 28px auto 0;
     }
 
     label {
       display: block;
+      margin-bottom: 9px;
+      text-align: left;
       font-weight: 700;
-      margin-bottom: 8px;
     }
 
-    textarea, input[type="file"] {
+    input[type="date"] {
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 14px;
-      border: 1px solid #e1d7ec;
+      padding: 13px 15px;
+      border: 1px solid #dfd2e8;
+      border-radius: 12px;
       background: white;
+      color: var(--text);
       font: inherit;
-      color: var(--ink);
-    }
-
-    textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    .hint, .file-list {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: .9rem;
-    }
-
-    .error {
-      min-height: 20px;
-      color: var(--warning);
-      font-size: 0.92rem;
-      margin-top: 10px;
-    }
-
-    .actions {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 22px;
     }
 
     button {
-      border: none;
-      border-radius: 999px;
       padding: 13px 24px;
+      border: 0;
+      border-radius: 999px;
+      color: white;
       background: linear-gradient(110deg, var(--pink), var(--purple));
-      color: #fff;
       font: inherit;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 8px 18px rgba(132, 86, 216, 0.2);
-      transition: transform 0.18s ease;
+      box-shadow: 0 8px 18px rgba(132, 86, 216, .2);
     }
 
-    button:hover { transform: translateY(-2px); }
-
-    button.secondary {
-      background: #f5edf9;
-      color: var(--ink);
-      box-shadow: none;
+    button:hover {
+      filter: brightness(1.05);
     }
 
-    .story-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid #bd9cf2;
+      outline-offset: 3px;
     }
 
-    .story-title {
-      font-weight: 700;
-      color: var(--pink);
-      font-size: 0.95rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    .error {
+      min-height: 1.5em;
+      color: #b42345;
     }
 
-    .progress {
-      flex: 1;
-      height: 10px;
-      background: #eadff0;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #ffd166, var(--pink));
-      transition: width 0.25s ease;
-    }
-
-    .story-card {
-      min-height: 380px;
-      border-radius: 20px;
-      background:
-        radial-gradient(circle at top left, rgba(255, 209, 102, 0.35), transparent 30%),
-        linear-gradient(135deg, #fff8fb, #f6eefc);
-      border: 1px solid rgba(255,255,255,0.7);
+    .photos {
       display: grid;
-      place-items: center;
-      padding: 22px;
-      overflow: hidden;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 26px 0;
     }
 
-    .story-card img, .story-card video {
+    .photos img {
       display: block;
-      max-width: 100%;
-      max-height: 65vh;
-      width: auto;
-      object-fit: contain;
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
       border-radius: 16px;
-      box-shadow: 0 20px 30px rgba(116, 79, 136, .18);
+      background: #f3edf6;
+      box-shadow: 0 8px 22px rgba(56, 40, 66, .12);
     }
 
-    .story-note {
+    .cake {
+      margin: 26px 0 4px;
+      font-size: clamp(4rem, 12vw, 6rem);
+      line-height: 1.2;
+    }
+
+    .note {
+      margin: 12px auto 26px;
       max-width: 680px;
-      text-align: center;
+      font-size: clamp(1.2rem, 4vw, 1.8rem);
+      line-height: 1.6;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
-      font-size: clamp(1.4rem, 4vw, 2.2rem);
-      font-weight: 700;
-      line-height: 1.5;
-      color: var(--ink);
     }
 
-    .story-label {
-      font-size: .8rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--pink);
-      font-weight: 700;
-      margin-bottom: 12px;
+    .video-frame {
+      margin: 24px auto;
+      max-width: 720px;
     }
 
-    .story-intro {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+    video {
+      display: block;
+      width: 100%;
+      max-height: 70vh;
+      border-radius: 16px;
+      background: #111;
     }
 
-    .story-intro .cake {
-      font-size: clamp(4rem, 12vw, 7rem);
-      margin: 0;
-    }
+    @media (max-width: 520px) {
+      body {
+        padding: 12px;
+      }
 
-    [hidden] { display: none !important; }
-
-    @media (max-width: 600px) {
-      .app { padding: 18px 14px; }
-      .story-card { min-height: 300px; }
-      .story-header { flex-direction: column; align-items: stretch; }
+      .photos img {
+        height: 200px;
+      }
     }
   </style>
 </head>
 <body>
-  <main class="app">
-    <!-- Welcome page -->
-    <section id="welcomePage" class="page active">
-      <div class="welcome">
-        <div class="cake" aria-label="Birthday cake">🎂</div>
-        <button id="goToUpload" type="button">Go to next →</button>
-      </div>
+  <main class="card">
+    <!-- Date of birth screen -->
+    <section id="datePage" class="page">
+      <h1>A Birthday Surprise 🎁</h1>
+      <p class="muted">Enter your date of birth to open your surprise.</p>
+
+      <form id="birthdayForm" class="birthday-form">
+        <label for="dobInput">Date of birth</label>
+        <input id="dobInput" type="date" required />
+        <p id="errorMessage" class="error" role="alert"></p>
+        <button type="submit">See your surprise</button>
+      </form>
     </section>
 
-    <!-- Upload page -->
-    <section id="uploadPage" class="page">
-      <h2 class="upload-title">Create your birthday story</h2>
-      <p class="sub">Write a birthday message, upload your photos, and add one short video.</p>
+    <!-- Photos, cake, and note -->
+    <section id="photosPage" class="page" hidden>
+      <h1>Happy Birthday! 🎉</h1>
+      <p class="muted">Here are some special memories for you.</p>
 
-      <div class="field">
-        <label for="wishNote">Birthday note</label>
-        <textarea id="wishNote" placeholder="Happy Birthday! Wishing you a day full of love and laughter..."></textarea>
-      </div>
+      <div id="photoGallery" class="photos"></div>
 
-      <div class="field">
-        <label for="photoInput">Photos</label>
-        <input id="photoInput" type="file" accept="image/*" multiple />
-        <p id="photoNames" class="file-list">No photos selected.</p>
-      </div>
+      <div class="cake" role="img" aria-label="Birthday cake">🎂</div>
+      <h2>A little birthday wish</h2>
+      <p id="birthdayNote" class="note"></p>
 
-      <div class="field">
-        <label for="videoInput">Video (max 60 MB)</label>
-        <input id="videoInput" type="file" accept="video/*" />
-        <p id="videoName" class="file-list">No video selected.</p>
-        <p class="hint">Only one video is allowed. Maximum size: 60MB.</p>
-      </div>
-
-      <div id="errorMessage" class="error" aria-live="polite"></div>
-
-      <div class="actions">
-        <button id="backToWelcome" class="secondary" type="button">← Back</button>
-        <button id="buildStory" type="button">Build Birthday Story 🎉</button>
-      </div>
+      <button id="nextButton" type="button">Next →</button>
     </section>
 
-    <!-- Story page -->
-    <section id="storyPage" class="page">
-      <div class="story-header">
-        <div class="story-title" id="storyTitle">Birthday Story</div>
-        <div class="progress">
-          <div id="progressBar" class="progress-bar"></div>
-        </div>
+    <!-- Video -->
+    <section id="videoPage" class="page" hidden>
+      <h1>One More Surprise 🎥</h1>
+      <div class="video-frame">
+        <video id="birthdayVideo" controls playsinline preload="metadata">
+          Your browser does not support video playback.
+        </video>
       </div>
-
-      <div id="storyCard" class="story-card"></div>
-
-      <div class="actions">
-        <button id="previousBtn" class="secondary" type="button" hidden>← Previous</button>
-        <button id="nextBtn" type="button">Next →</button>
-      </div>
+      <button id="backButton" type="button">← Back to photos and note</button>
     </section>
   </main>
 
   <script>
-    const welcomePage = document.getElementById("welcomePage");
-    const uploadPage = document.getElementById("uploadPage");
-    const storyPage = document.getElementById("storyPage");
+    /*
+      Update these values before hosting the page.
 
-    const wishNote = document.getElementById("wishNote");
-    const photoInput = document.getElementById("photoInput");
-    const videoInput = document.getElementById("videoInput");
-    const photoNames = document.getElementById("photoNames");
-    const videoName = document.getElementById("videoName");
+      Example folder layout:
+        index.html
+        media/
+          photo1.jpg
+          photo2.jpg
+          birthday-video.mp4
+    */
+    const BIRTHDAY = {
+      // Use YYYY-MM-DD format, for example "2000-05-21".
+      dateOfBirth: "2000-05-21",
+
+      // Add the online paths or URLs for the photos.
+      photos: [
+        "media/photo1.jpg",
+        "media/photo2.jpg"
+      ],
+
+      note: "Happy Birthday! Wishing you a wonderful day filled with happiness, laughter, and all the things you love.",
+
+      // Use a video hosted online; keep it within your hosting provider's limits.
+      video: "media/birthday-video.mp4"
+    };
+
+    const datePage = document.getElementById("datePage");
+    const photosPage = document.getElementById("photosPage");
+    const videoPage = document.getElementById("videoPage");
+    const birthdayForm = document.getElementById("birthdayForm");
+    const dobInput = document.getElementById("dobInput");
     const errorMessage = document.getElementById("errorMessage");
+    const photoGallery = document.getElementById("photoGallery");
+    const birthdayNote = document.getElementById("birthdayNote");
+    const birthdayVideo = document.getElementById("birthdayVideo");
 
-    const storyCard = document.getElementById("storyCard");
-    const progressBar = document.getElementById("progressBar");
-    const previousBtn = document.getElementById("previousBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const storyTitle = document.getElementById("storyTitle");
-
-    const MAX_VIDEO_SIZE = 60 * 1024 * 1024;
-    let items = [];
-    let currentIndex = 0;
-    let objectUrls = [];
-
-    function showPage(page) {
-      [welcomePage, uploadPage, storyPage].forEach(section => {
-        section.classList.remove("active");
+    function showPage(pageToShow) {
+      [datePage, photosPage, videoPage].forEach(page => {
+        page.hidden = page !== pageToShow;
       });
-      page.classList.add("active");
     }
 
-    document.getElementById("goToUpload").addEventListener("click", () => {
-      showPage(uploadPage);
-    });
+    function prepareBirthdayContent() {
+      photoGallery.replaceChildren();
 
-    document.getElementById("backToWelcome").addEventListener("click", () => {
-      showPage(welcomePage);
-    });
-
-    photoInput.addEventListener("change", () => {
-      const photos = Array.from(photoInput.files || []);
-      photoNames.textContent = photos.length
-        ? photos.map(file => file.name).join(", ")
-        : "No photos selected.";
-      errorMessage.textContent = "";
-    });
-
-    videoInput.addEventListener("change", () => {
-      const video = videoInput.files[0];
-      if (video && video.size > MAX_VIDEO_SIZE) {
-        errorMessage.textContent = "The video is larger than 60 MB. Please choose a smaller video.";
-        videoInput.value = "";
-        videoName.textContent = "No video selected.";
-        return;
-      }
-      videoName.textContent = video ? video.name : "No video selected.";
-      errorMessage.textContent = "";
-    });
-
-    function buildStory() {
-      errorMessage.textContent = "";
-
-      const note = wishNote.value.trim();
-      const photos = Array.from(photoInput.files || []);
-      const video = videoInput.files[0];
-
-      if (video && video.size > MAX_VIDEO_SIZE) {
-        errorMessage.textContent = "The video is larger than 60 MB. Please choose a smaller video.";
-        return;
-      }
-
-      if (!note && photos.length === 0 && !video) {
-        errorMessage.textContent = "Add a note, at least one photo, or a video to build the birthday story.";
-        return;
-      }
-
-      objectUrls.forEach(url => URL.revokeObjectURL(url));
-      objectUrls = [];
-      items = [];
-
-      // Story order: intro cake → photos → note → video
-      items.push({ type: "intro" });
-
-      photos.forEach(file => {
-        const url = URL.createObjectURL(file);
-        objectUrls.push(url);
-        items.push({ type: "image", content: url });
-      });
-
-      if (note) {
-        items.push({ type: "note", content: note });
-      }
-
-      if (video) {
-        const url = URL.createObjectURL(video);
-        objectUrls.push(url);
-        items.push({ type: "video", content: url });
-      }
-
-      currentIndex = 0;
-      showPage(storyPage);
-      renderItem();
-    }
-
-    function renderItem() {
-      storyCard.replaceChildren();
-
-      const item = items[currentIndex];
-      if (!item) return;
-
-      if (item.type === "intro") {
-        const introWrap = document.createElement("div");
-        introWrap.className = "story-intro";
-
-        const cake = document.createElement("div");
-        cake.className = "cake";
-        cake.textContent = "🎂";
-        cake.setAttribute("aria-label", "Birthday cake");
-
-        introWrap.appendChild(cake);
-        storyCard.appendChild(introWrap);
-      }
-
-      if (item.type === "image") {
+      BIRTHDAY.photos.forEach((photoUrl, index) => {
         const image = document.createElement("img");
-        image.src = item.content;
-        image.alt = "Birthday memory";
-        storyCard.appendChild(image);
-      }
+        image.src = photoUrl;
+        image.alt = `Birthday photo ${index + 1}`;
+        image.loading = "lazy";
+        photoGallery.appendChild(image);
+      });
 
-      if (item.type === "note") {
-        const wrapper = document.createElement("div");
-        const label = document.createElement("div");
-        const note = document.createElement("div");
-
-        label.className = "story-label";
-        label.textContent = "Birthday note";
-
-        note.className = "story-note";
-        note.textContent = item.content;
-
-        wrapper.append(label, note);
-        storyCard.appendChild(wrapper);
-      }
-
-      if (item.type === "video") {
-        const video = document.createElement("video");
-        video.src = item.content;
-        video.controls = true;
-        video.autoplay = true;
-        video.playsInline = true;
-        storyCard.appendChild(video);
-      }
-
-      // Progress
-      const percent = ((currentIndex + 1) / items.length) * 100;
-      progressBar.style.width = `${percent}%`;
-
-      // Show/hide Buttons
-      previousBtn.hidden = currentIndex === 0;
-      nextBtn.textContent = currentIndex === items.length - 1 ? "Start again ↻" : "Next →";
-
-      storyTitle.textContent = `Birthday Story · ${currentIndex + 1}/${items.length}`;
+      birthdayNote.textContent = BIRTHDAY.note;
+      birthdayVideo.src = BIRTHDAY.video;
     }
 
-    document.getElementById("buildStory").addEventListener("click", buildStory);
+    birthdayForm.addEventListener("submit", event => {
+      event.preventDefault();
+      errorMessage.textContent = "";
 
-    previousBtn.addEventListener("click", () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        renderItem();
+      if (dobInput.value !== BIRTHDAY.dateOfBirth) {
+        errorMessage.textContent = "That date doesn't match. Please try again.";
+        return;
       }
+
+      prepareBirthdayContent();
+      showPage(photosPage);
     });
 
-    nextBtn.addEventListener("click", () => {
-      if (currentIndex < items.length - 1) {
-        currentIndex++;
-      } else {
-        currentIndex = 0;
-      }
-      renderItem();
+    document.getElementById("nextButton").addEventListener("click", () => {
+      showPage(videoPage);
+    });
+
+    document.getElementById("backButton").addEventListener("click", () => {
+      birthdayVideo.pause();
+      showPage(photosPage);
     });
   </script>
 </body>
