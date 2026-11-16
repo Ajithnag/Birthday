@@ -1,173 +1,489 @@
-<script>
-  const welcomePage = document.getElementById("welcomePage");
-  const uploadPage = document.getElementById("uploadPage");
-  const storyPage = document.getElementById("storyPage");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Story</title>
+  <style>
+    :root {
+      --pink: #f04f88;
+      --purple: #8456d8;
+      --ink: #392943;
+      --soft-pink: #fff0f5;
+      --soft-purple: #f1eaff;
+      --card: rgba(255, 255, 255, 0.8);
+      --muted: #6f5b76;
+      --warning: #c93a5e;
+    }
 
-  const wishNote = document.getElementById("wishNote");
-  const photoInput = document.getElementById("photoInput");
-  const videoInput = document.getElementById("videoInput");
-  const photoNames = document.getElementById("photoNames");
-  const videoName = document.getElementById("videoName");
-  const errorMessage = document.getElementById("errorMessage");
+    * { box-sizing: border-box; }
 
-  const storyCard = document.getElementById("storyCard");
-  const storyCount = document.getElementById("storyCount");
-  const progressBar = document.getElementById("progressBar");
-  const previousBtn = document.getElementById("previousBtn");
-  const nextBtn = document.getElementById("nextBtn");
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--soft-pink), var(--soft-purple));
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-  const MAX_VIDEO_SIZE = 60 * 1024 * 1024;
-  let items = [];
-  let currentIndex = 0;
-  let objectUrls = [];
+    .app {
+      width: min(820px, 100%);
+      min-height: 580px;
+      padding: clamp(18px, 4vw, 40px);
+      border-radius: 28px;
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow: 0 20px 60px rgba(90, 53, 112, .16);
+    }
 
-  function showPage(page) {
-    [welcomePage, uploadPage, storyPage].forEach(section => {
-      section.classList.remove("active");
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .welcome {
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .cake {
+      font-size: clamp(5rem, 16vw, 9rem);
+      animation: bounce 1.5s ease-in-out infinite;
+      margin-bottom: 18px;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      color: var(--pink);
+    }
+
+    .upload-title {
+      margin-bottom: 10px;
+      color: var(--pink);
+      font-size: clamp(1.5rem, 5vw, 2.4rem);
+    }
+
+    .sub {
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0 0 18px;
+    }
+
+    .field {
+      margin: 18px 0;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    textarea, input[type="file"] {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid #e1d7ec;
+      background: white;
+      font: inherit;
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .hint, .file-list {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .error {
+      min-height: 20px;
+      color: var(--warning);
+      font-size: 0.92rem;
+      margin-top: 10px;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 13px 24px;
+      background: linear-gradient(110deg, var(--pink), var(--purple));
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(132, 86, 216, 0.2);
+      transition: transform 0.18s ease;
+    }
+
+    button:hover { transform: translateY(-2px); }
+
+    button.secondary {
+      background: #f5edf9;
+      color: var(--ink);
+      box-shadow: none;
+    }
+
+    .story-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .story-title {
+      font-weight: 700;
+      color: var(--pink);
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .progress {
+      flex: 1;
+      height: 10px;
+      background: #eadff0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ffd166, var(--pink));
+      transition: width 0.25s ease;
+    }
+
+    .story-card {
+      min-height: 380px;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at top left, rgba(255, 209, 102, 0.35), transparent 30%),
+        linear-gradient(135deg, #fff8fb, #f6eefc);
+      border: 1px solid rgba(255,255,255,0.7);
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      overflow: hidden;
+    }
+
+    .story-card img, .story-card video {
+      display: block;
+      max-width: 100%;
+      max-height: 65vh;
+      width: auto;
+      object-fit: contain;
+      border-radius: 16px;
+      box-shadow: 0 20px 30px rgba(116, 79, 136, .18);
+    }
+
+    .story-note {
+      max-width: 680px;
+      text-align: center;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .story-label {
+      font-size: .8rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--pink);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .story-intro {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .story-intro .cake {
+      font-size: clamp(4rem, 12vw, 7rem);
+      margin: 0;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 600px) {
+      .app { padding: 18px 14px; }
+      .story-card { min-height: 300px; }
+      .story-header { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <!-- Welcome page -->
+    <section id="welcomePage" class="page active">
+      <div class="welcome">
+        <div class="cake" aria-label="Birthday cake">🎂</div>
+        <button id="goToUpload" type="button">Go to next →</button>
+      </div>
+    </section>
+
+    <!-- Upload page -->
+    <section id="uploadPage" class="page">
+      <h2 class="upload-title">Create your birthday story</h2>
+      <p class="sub">Write a birthday message, upload your photos, and add one short video.</p>
+
+      <div class="field">
+        <label for="wishNote">Birthday note</label>
+        <textarea id="wishNote" placeholder="Happy Birthday! Wishing you a day full of love and laughter..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="photoInput">Photos</label>
+        <input id="photoInput" type="file" accept="image/*" multiple />
+        <p id="photoNames" class="file-list">No photos selected.</p>
+      </div>
+
+      <div class="field">
+        <label for="videoInput">Video (max 60 MB)</label>
+        <input id="videoInput" type="file" accept="video/*" />
+        <p id="videoName" class="file-list">No video selected.</p>
+        <p class="hint">Only one video is allowed. Maximum size: 60MB.</p>
+      </div>
+
+      <div id="errorMessage" class="error" aria-live="polite"></div>
+
+      <div class="actions">
+        <button id="backToWelcome" class="secondary" type="button">← Back</button>
+        <button id="buildStory" type="button">Build Birthday Story 🎉</button>
+      </div>
+    </section>
+
+    <!-- Story page -->
+    <section id="storyPage" class="page">
+      <div class="story-header">
+        <div class="story-title" id="storyTitle">Birthday Story</div>
+        <div class="progress">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+      </div>
+
+      <div id="storyCard" class="story-card"></div>
+
+      <div class="actions">
+        <button id="previousBtn" class="secondary" type="button" hidden>← Previous</button>
+        <button id="nextBtn" type="button">Next →</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const welcomePage = document.getElementById("welcomePage");
+    const uploadPage = document.getElementById("uploadPage");
+    const storyPage = document.getElementById("storyPage");
+
+    const wishNote = document.getElementById("wishNote");
+    const photoInput = document.getElementById("photoInput");
+    const videoInput = document.getElementById("videoInput");
+    const photoNames = document.getElementById("photoNames");
+    const videoName = document.getElementById("videoName");
+    const errorMessage = document.getElementById("errorMessage");
+
+    const storyCard = document.getElementById("storyCard");
+    const progressBar = document.getElementById("progressBar");
+    const previousBtn = document.getElementById("previousBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const storyTitle = document.getElementById("storyTitle");
+
+    const MAX_VIDEO_SIZE = 60 * 1024 * 1024;
+    let items = [];
+    let currentIndex = 0;
+    let objectUrls = [];
+
+    function showPage(page) {
+      [welcomePage, uploadPage, storyPage].forEach(section => {
+        section.classList.remove("active");
+      });
+      page.classList.add("active");
+    }
+
+    document.getElementById("goToUpload").addEventListener("click", () => {
+      showPage(uploadPage);
     });
-    page.classList.add("active");
-  }
 
-  document.getElementById("goToUpload").addEventListener("click", () => {
-    showPage(uploadPage);
-  });
-
-  document.getElementById("backToWelcome").addEventListener("click", () => {
-    showPage(welcomePage);
-  });
-
-  photoInput.addEventListener("change", () => {
-    const photos = Array.from(photoInput.files || []);
-    photoNames.textContent = photos.length
-      ? photos.map(file => file.name).join(", ")
-      : "No photos selected.";
-    errorMessage.textContent = "";
-  });
-
-  videoInput.addEventListener("change", () => {
-    const video = videoInput.files[0];
-    errorMessage.textContent = "";
-
-    if (video && video.size > MAX_VIDEO_SIZE) {
-      errorMessage.textContent =
-        "The video is larger than 60 MB. Please choose a smaller video.";
-      videoInput.value = "";
-      videoName.textContent = "No video selected.";
-      return;
-    }
-
-    videoName.textContent = video ? video.name : "No video selected.";
-  });
-
-  function buildStory() {
-    errorMessage.textContent = "";
-
-    const note = wishNote.value.trim();
-    const photos = Array.from(photoInput.files || []);
-    const video = videoInput.files[0];
-
-    if (video && video.size > MAX_VIDEO_SIZE) {
-      errorMessage.textContent =
-        "The video is larger than 60 MB. Please choose a smaller video.";
-      return;
-    }
-
-    if (!note && photos.length === 0 && !video) {
-      errorMessage.textContent =
-        "Add a note, at least one photo, or a video to build your story.";
-      return;
-    }
-
-    objectUrls.forEach(url => URL.revokeObjectURL(url));
-    objectUrls = [];
-    items = [];
-
-    // Story order: note, photos, then video.
-    if (note) {
-      items.push({ type: "note", content: note });
-    }
-
-    photos.forEach(file => {
-      const url = URL.createObjectURL(file);
-      objectUrls.push(url);
-      items.push({ type: "image", content: url });
+    document.getElementById("backToWelcome").addEventListener("click", () => {
+      showPage(welcomePage);
     });
 
-    if (video) {
-      const url = URL.createObjectURL(video);
-      objectUrls.push(url);
-      items.push({ type: "video", content: url });
-    }
+    photoInput.addEventListener("change", () => {
+      const photos = Array.from(photoInput.files || []);
+      photoNames.textContent = photos.length
+        ? photos.map(file => file.name).join(", ")
+        : "No photos selected.";
+      errorMessage.textContent = "";
+    });
 
-    currentIndex = 0;
-    showPage(storyPage);
-    renderItem();
-  }
+    videoInput.addEventListener("change", () => {
+      const video = videoInput.files[0];
+      if (video && video.size > MAX_VIDEO_SIZE) {
+        errorMessage.textContent = "The video is larger than 60 MB. Please choose a smaller video.";
+        videoInput.value = "";
+        videoName.textContent = "No video selected.";
+        return;
+      }
+      videoName.textContent = video ? video.name : "No video selected.";
+      errorMessage.textContent = "";
+    });
 
-  function renderItem() {
-    storyCard.replaceChildren();
+    function buildStory() {
+      errorMessage.textContent = "";
 
-    const item = items[currentIndex];
-    if (!item) return;
+      const note = wishNote.value.trim();
+      const photos = Array.from(photoInput.files || []);
+      const video = videoInput.files[0];
 
-    if (item.type === "note") {
-      const wrapper = document.createElement("div");
-      const label = document.createElement("div");
-      const note = document.createElement("div");
+      if (video && video.size > MAX_VIDEO_SIZE) {
+        errorMessage.textContent = "The video is larger than 60 MB. Please choose a smaller video.";
+        return;
+      }
 
-      label.className = "story-label";
-      label.textContent = "Birthday wish";
+      if (!note && photos.length === 0 && !video) {
+        errorMessage.textContent = "Add a note, at least one photo, or a video to build the birthday story.";
+        return;
+      }
 
-      note.className = "story-note";
-      note.textContent = item.content;
+      objectUrls.forEach(url => URL.revokeObjectURL(url));
+      objectUrls = [];
+      items = [];
 
-      wrapper.append(label, note);
-      storyCard.appendChild(wrapper);
-    }
+      // Story order: intro cake → photos → note → video
+      items.push({ type: "intro" });
 
-    if (item.type === "image") {
-      const image = document.createElement("img");
-      image.src = item.content;
-      image.alt = "Birthday memory";
-      storyCard.appendChild(image);
-    }
+      photos.forEach(file => {
+        const url = URL.createObjectURL(file);
+        objectUrls.push(url);
+        items.push({ type: "image", content: url });
+      });
 
-    if (item.type === "video") {
-      const video = document.createElement("video");
-      video.src = item.content;
-      video.controls = true;
-      video.playsInline = true;
-      storyCard.appendChild(video);
-    }
+      if (note) {
+        items.push({ type: "note", content: note });
+      }
 
-    storyCount.textContent =
-      `Birthday Story · ${currentIndex + 1} of ${items.length}`;
+      if (video) {
+        const url = URL.createObjectURL(video);
+        objectUrls.push(url);
+        items.push({ type: "video", content: url });
+      }
 
-    progressBar.style.width =
-      `${((currentIndex + 1) / items.length) * 100}%`;
-
-    previousBtn.disabled = currentIndex === 0;
-    previousBtn.style.opacity = currentIndex === 0 ? ".5" : "1";
-
-    nextBtn.textContent =
-      currentIndex === items.length - 1 ? "Start again ↻" : "Next →";
-  }
-
-  document.getElementById("buildStory").addEventListener("click", buildStory);
-
-  previousBtn.addEventListener("click", () => {
-    if (currentIndex > 0) {
-      currentIndex--;
+      currentIndex = 0;
+      showPage(storyPage);
       renderItem();
     }
-  });
 
-  nextBtn.addEventListener("click", () => {
-    if (currentIndex < items.length - 1) {
-      currentIndex++;
-    } else {
-      currentIndex = 0;
+    function renderItem() {
+      storyCard.replaceChildren();
+
+      const item = items[currentIndex];
+      if (!item) return;
+
+      if (item.type === "intro") {
+        const introWrap = document.createElement("div");
+        introWrap.className = "story-intro";
+
+        const cake = document.createElement("div");
+        cake.className = "cake";
+        cake.textContent = "🎂";
+        cake.setAttribute("aria-label", "Birthday cake");
+
+        introWrap.appendChild(cake);
+        storyCard.appendChild(introWrap);
+      }
+
+      if (item.type === "image") {
+        const image = document.createElement("img");
+        image.src = item.content;
+        image.alt = "Birthday memory";
+        storyCard.appendChild(image);
+      }
+
+      if (item.type === "note") {
+        const wrapper = document.createElement("div");
+        const label = document.createElement("div");
+        const note = document.createElement("div");
+
+        label.className = "story-label";
+        label.textContent = "Birthday note";
+
+        note.className = "story-note";
+        note.textContent = item.content;
+
+        wrapper.append(label, note);
+        storyCard.appendChild(wrapper);
+      }
+
+      if (item.type === "video") {
+        const video = document.createElement("video");
+        video.src = item.content;
+        video.controls = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        storyCard.appendChild(video);
+      }
+
+      // Progress
+      const percent = ((currentIndex + 1) / items.length) * 100;
+      progressBar.style.width = `${percent}%`;
+
+      // Show/hide Buttons
+      previousBtn.hidden = currentIndex === 0;
+      nextBtn.textContent = currentIndex === items.length - 1 ? "Start again ↻" : "Next →";
+
+      storyTitle.textContent = `Birthday Story · ${currentIndex + 1}/${items.length}`;
     }
-    renderItem();
-  });
-</script>
+
+    document.getElementById("buildStory").addEventListener("click", buildStory);
+
+    previousBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderItem();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < items.length - 1) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      renderItem();
+    });
+  </script>
+</body>
+</html>
