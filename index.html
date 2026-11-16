@@ -1,338 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Birthday Surprise Builder</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Birthday Wishes 🎂</title>
   <style>
     :root {
-      --bg1: #fff3f8;
-      --bg2: #f1eaff;
-      --card: rgba(255,255,255,0.92);
-      --pink: #f06292;
-      --purple: #7c5ce6;
-      --ink: #2d1e38;
-      --muted: #6f5b76;
-      --line: #eadff5;
-      --danger: #b42345;
-      --success: #237d4b;
+      --pink: #ff4f87;
+      --deep-pink: #e83e76;
+      --cream: #fffaf2;
+      --ink: #422b43;
+      --muted: #795f78;
+      --card: rgba(255, 255, 255, .92);
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
-      color: var(--ink);
-    }
+    * { box-sizing: border-box; }
 
     body {
-      display: grid;
-      place-items: center;
-      padding: 20px;
-    }
-
-    .app {
-      width: min(1000px, 100%);
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,0.9);
-      border-radius: 28px;
-      box-shadow: 0 18px 48px rgba(58, 30, 72, 0.14);
-      padding: 18px 18px 24px;
-    }
-
-    .tabs {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    body.shared-view .tabs {
-      display: none;
-    }
-
-    .tab {
-      border: 1px solid var(--line);
-      background: white;
+      min-height: 100vh;
+      margin: 0;
       color: var(--ink);
-      border-radius: 16px;
-      min-width: 120px;
-      padding: 12px 18px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s ease;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(ellipse at 12% 20%, rgba(255, 221, 235, .75), transparent 38%),
+        radial-gradient(ellipse at 88% 75%, rgba(255, 225, 175, .65), transparent 36%),
+        linear-gradient(135deg, #fff5f8, #fff9ec 55%, #f9f0ff);
+      overflow-x: hidden;
     }
 
-    .tab.active {
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      border-color: transparent;
-      color: white;
-      box-shadow: 0 8px 18px rgba(124,92,230,0.22);
+    .decorations {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
     }
 
-    .page {
-      display: none;
+    .decoration {
+      position: absolute;
+      opacity: .20;
+      animation: float 7s ease-in-out infinite;
+      user-select: none;
     }
 
-    .page.active {
-      display: block;
+    .decoration:nth-child(1) { top: 8%; left: 5%; font-size: 3rem; }
+    .decoration:nth-child(2) { top: 18%; right: 8%; font-size: 3.4rem; animation-delay: -2s; }
+    .decoration:nth-child(3) { top: 55%; left: 2%; font-size: 3rem; animation-delay: -4s; }
+    .decoration:nth-child(4) { bottom: 8%; right: 6%; font-size: 3.2rem; animation-delay: -1s; }
+    .decoration:nth-child(5) { bottom: 35%; left: 12%; font-size: 2.4rem; animation-delay: -3s; }
+    .decoration:nth-child(6) { top: 42%; right: 12%; font-size: 2.6rem; animation-delay: -5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-17px) rotate(5deg); }
     }
 
-    .panel {
-      padding: 10px 6px 4px;
+    header {
+      width: min(100% - 32px, 960px);
+      margin: 24px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
 
-    h1 {
-      text-align: center;
-      margin: 0 0 14px;
-      color: var(--pink);
-      font-size: clamp(2rem, 5vw, 3rem);
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--deep-pink);
+      font-size: 1.15rem;
+      font-weight: 850;
     }
 
-    h2 {
-      text-align: center;
-      margin: 0 0 12px;
-      color: var(--pink);
-      font-size: clamp(1.5rem, 4vw, 2.4rem);
+    .brand-icon { font-size: 1.8rem; }
+
+    main {
+      width: min(100% - 32px, 760px);
+      margin: 34px auto 64px;
     }
 
-    .lead {
-      text-align: center;
-      color: var(--muted);
-      line-height: 1.6;
-      margin: 0 0 18px;
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, .9);
+      border-radius: 26px;
+      padding: clamp(22px, 5vw, 42px);
+      box-shadow: 0 18px 60px rgba(112, 55, 89, .13);
+      backdrop-filter: blur(8px);
     }
 
-    .field {
-      margin: 18px 0;
+    h1, h2, p { margin-top: 0; }
+    h1 { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.1; }
+    h2 { font-size: clamp(1.5rem, 4vw, 2rem); }
+    p { line-height: 1.65; color: var(--muted); }
+
+    .eyebrow {
+      margin-bottom: 10px;
+      color: var(--deep-pink);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 18px;
+      margin-top: 26px;
     }
 
     label {
       display: block;
       margin-bottom: 8px;
-      font-weight: 700;
+      font-weight: 750;
     }
 
-    textarea, input[type="file"] {
+    input, textarea {
       width: 100%;
       padding: 13px 15px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
+      border: 1px solid #ead8e4;
+      border-radius: 13px;
       background: #fff;
       color: var(--ink);
       font: inherit;
+    }
+
+    input:focus, textarea:focus {
+      outline: 3px solid rgba(255, 79, 135, .18);
+      border-color: var(--pink);
     }
 
     textarea {
-      min-height: 120px;
+      min-height: 130px;
       resize: vertical;
     }
 
-    .hint, .file-status {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 0.92rem;
-      overflow-wrap: anywhere;
+    .hint {
+      margin: 6px 0 0;
+      font-size: .88rem;
     }
 
-    .message {
-      min-height: 1.4em;
-      margin-top: 12px;
-      text-align: center;
-      line-height: 1.5;
-      font-size: 0.95rem;
-    }
-
-    .message.error { color: var(--danger); }
-    .message.success { color: var(--success); }
-
-    .actions {
+    .button-row {
       display: flex;
-      justify-content: center;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 20px;
+      margin-top: 24px;
     }
 
-    button, .link-btn {
-      appearance: none;
-      border: none;
-      border-radius: 999px;
-      padding: 13px 22px;
-      color: white;
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      box-shadow: 0 10px 20px rgba(124,92,230,0.18);
-    }
-
-    button.secondary, .link-btn.secondary {
-      background: #f3edf7;
-      color: var(--ink);
-      box-shadow: none;
-    }
-
-    .preview-box {
-      background: #fff;
-      border: 1px solid var(--line);
+    button, .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 12px 20px;
+      border: 0;
       border-radius: 14px;
-      padding: 14px 16px;
-      margin-top: 14px;
-      word-break: break-all;
-      color: var(--ink);
-    }
-
-    .preview-box a {
-      color: var(--purple);
+      background: var(--pink);
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
       text-decoration: none;
-      word-break: break-all;
+      cursor: pointer;
+      transition: transform .15s, background .15s;
     }
 
-    .story {
-      min-height: 360px;
-      display: grid;
-      place-items: center;
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      background: linear-gradient(135deg, #fff8fb, #f6efff);
+    button:hover, .button:hover { background: var(--deep-pink); transform: translateY(-1px); }
+    button:disabled { opacity: .65; cursor: wait; transform: none; }
+    .secondary { background: #f5e8f0; color: var(--ink); }
+    .secondary:hover { background: #ecd9e7; }
+
+    .notice {
+      display: none;
+      margin: 18px 0 0;
+      padding: 13px 15px;
+      border-radius: 12px;
+      background: #fff1f4;
+      color: #9c2852;
+      line-height: 1.5;
     }
 
-    .story video, .story img {
+    .notice.success {
       display: block;
-      width: 100%;
-      max-height: 70vh;
-      border-radius: 16px;
-      background: #111;
+      background: #effaf2;
+      color: #236b3c;
     }
 
-    .story .note {
-      max-width: 700px;
-      text-align: center;
-      font-size: clamp(1.25rem, 3vw, 2rem);
-      line-height: 1.6;
-      white-space: pre-wrap;
+    .notice.error { display: block; }
+
+    .generated-link {
+      display: none;
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px dashed #e6a3bd;
+      border-radius: 14px;
+      background: #fff8fb;
       overflow-wrap: anywhere;
     }
 
-    .story .gallery {
+    .generated-link a { color: var(--deep-pink); font-weight: 750; }
+
+    .birthday-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .cake-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      border-radius: 999px;
+      background: #fff0f5;
+      color: var(--deep-pink);
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .cake-badge .cake { font-size: 1.8rem; }
+
+    .step-indicator {
+      margin-bottom: 20px;
+      color: var(--deep-pink);
+      font-size: .82rem;
+      font-weight: 850;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    video {
+      display: block;
       width: 100%;
+      max-height: 480px;
+      margin: 20px 0;
+      border-radius: 18px;
+      background: #241a24;
+    }
+
+    .note-display {
+      padding: 22px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fff4f8, #fff8e9);
+      color: var(--ink);
+      font-size: 1.15rem;
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+
+    .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 14px;
+      margin-top: 20px;
     }
 
-    .story .gallery img {
+    .gallery img {
       width: 100%;
-      height: 220px;
+      height: 230px;
+      border-radius: 16px;
       object-fit: cover;
-      border-radius: 14px;
-      box-shadow: 0 8px 20px rgba(56,40,66,0.12);
+      box-shadow: 0 8px 24px rgba(65, 34, 60, .12);
     }
 
-    .slide-count {
-      text-align: center;
-      color: var(--muted);
-      margin-top: 14px;
-    }
+    .center { text-align: center; }
 
-    @media (max-width: 620px) {
-      .tab {
-        flex: 1 1 40%;
-      }
+    @media (max-width: 520px) {
+      header { margin-top: 16px; }
+      main { margin-top: 22px; }
+      .birthday-top { align-items: flex-start; flex-direction: column; }
+      .cake-badge { align-self: flex-start; }
     }
   </style>
 </head>
 <body>
-  <main class="app">
-    <nav class="tabs" aria-label="Birthday steps">
-      <button class="tab active" type="button" data-step="make">🛠️ Make</button>
-      <button class="tab" type="button" data-step="seal">🧿 Seal</button>
-      <button class="tab" type="button" data-step="sent">📤 Sent</button>
-      <button class="tab" type="button" data-step="open">🔓 Open</button>
-    </nav>
+  <div class="decorations" aria-hidden="true">
+    <span class="decoration">🎈</span>
+    <span class="decoration">🍰</span>
+    <span class="decoration">🎈</span>
+    <span class="decoration">🍫</span>
+    <span class="decoration">🎂</span>
+    <span class="decoration">🍬</span>
+  </div>
 
-    <section id="makePage" class="page active">
-      <div class="panel">
-        <h1>Make your birthday surprise</h1>
-        <p class="lead">
-          Add a note, some photos, and one video. Click Seal to save, then Sent to make a URL.
-        </p>
+  <header>
+    <div class="brand"><span class="brand-icon">🎂</span> Birthday Wishes</div>
+  </header>
 
-        <div class="field">
-          <label for="noteInput">Birthday note</label>
-          <textarea id="noteInput" placeholder="Happy Birthday!"></textarea>
+  <main>
+    <section id="createScreen" class="card">
+      <div class="eyebrow">Make their day extra special</div>
+      <h1>Create a birthday surprise 🎉</h1>
+      <p>Add five photos, a birthday video, a heartfelt note, and their date of birth. We’ll make a link to your surprise.</p>
+
+      <form id="birthdayForm" class="form-grid">
+        <div>
+          <label for="photos">Choose exactly 5 photos</label>
+          <input id="photos" type="file" accept="image/*" multiple required>
+          <p class="hint">Select five image files. They stay in this browser.</p>
         </div>
 
-        <div class="field">
-          <label for="photoInput">Photos</label>
-          <input id="photoInput" type="file" accept="image/*" multiple />
-          <p id="photoStatus" class="file-status">No photos selected.</p>
+        <div>
+          <label for="video">Choose a birthday video (up to 60 MB)</label>
+          <input id="video" type="file" accept="video/*" required>
+          <p class="hint">Maximum file size: 60 MB.</p>
         </div>
 
-        <div class="field">
-          <label for="videoInput">One video (max 60 MB)</label>
-          <input id="videoInput" type="file" accept="video/*" />
-          <p id="videoStatus" class="file-status">No video selected.</p>
+        <div>
+          <label for="note">Birthday note</label>
+          <textarea id="note" maxlength="3000" placeholder="Write a lovely birthday message..." required></textarea>
         </div>
 
-        <p id="makeMessage" class="message" role="status"></p>
-
-        <div class="actions">
-          <button id="sealButton" type="button">🧿 Seal and save</button>
+        <div>
+          <label for="dob">Date of birth</label>
+          <input id="dob" type="date" required>
         </div>
-      </div>
+
+        <div class="button-row">
+          <button id="createButton" type="submit">Create birthday link ✨</button>
+        </div>
+      </form>
+
+      <div id="formNotice" class="notice" role="status"></div>
+      <div id="generatedLink" class="generated-link"></div>
     </section>
 
-    <section id="sealPage" class="page">
-      <div class="panel">
-        <h2>🧿 Seal</h2>
-        <p class="lead">Your draft is saved in this browser.</p>
-        <p id="sealMessage" class="message success"></p>
-
-        <div class="actions">
-          <button id="backToMake" class="secondary" type="button">Back to Make</button>
-          <button id="sendButton" type="button">📤 Sent</button>
+    <section id="entryScreen" class="card" hidden>
+      <div class="eyebrow">A little surprise is waiting</div>
+      <h1>Is it your birthday? 🎈</h1>
+      <p>Enter your date of birth to open your birthday wishes.</p>
+      <form id="dobForm" class="form-grid">
+        <div>
+          <label for="entryDob">Your date of birth</label>
+          <input id="entryDob" type="date" required>
         </div>
-      </div>
+        <div class="button-row">
+          <button type="submit">Open my surprise 🎁</button>
+        </div>
+      </form>
+      <div id="entryNotice" class="notice" role="status"></div>
     </section>
 
-    <section id="sentPage" class="page">
-      <div class="panel">
-        <h2>📤 Sent</h2>
-        <p id="sentMessage" class="lead">A new URL will appear here after submission.</p>
-
-        <div class="preview-box">
-          <a id="shareLink" href="#" target="_blank" rel="noopener" hidden></a>
+    <section id="wishScreen" class="card" hidden>
+      <div class="birthday-top">
+        <div>
+          <div class="eyebrow">A celebration made just for you</div>
+          <h1 id="birthdayTitle">Happy Birthday!</h1>
         </div>
-
-        <div class="actions">
-          <button id="copyUrlButton" class="secondary" type="button">Copy URL</button>
-          <a id="openShareLink" class="link-btn" href="#" target="_blank" rel="noopener" hidden>Open URL</a>
-        </div>
+        <div class="cake-badge"><span class="cake">🎂</span><span id="ageLabel"></span></div>
       </div>
-    </section>
 
-    <section id="openPage" class="page">
-      <div class="panel">
-        <h2>🔓 Open</h2>
-        <p id="openMessage" class="lead"></p>
-        <div id="storyContent" class="story"></div>
-        <p id="slideCount" class="slide-count"></p>
-        <div id="openActions" class="actions">
-          <button id="prevButton" class="secondary" type="button">← Previous</button>
-          <button id="nextButton" type="button">Next →</button>
-        </div>
+      <div id="stepContent"></div>
+      <div class="button-row">
+        <button id="nextButton" type="button">Next →</button>
       </div>
     </section>
   </main>
@@ -341,42 +363,281 @@
     (() => {
       "use strict";
 
-      const DB_NAME = "birthday-story-db";
-      const STORE_NAME = "birthday-store";
-      const DRAFT_KEY = "draft";
-      const MAX_VIDEO_SIZE = 60 * 1024 * 1024;
+      const DB_NAME = "BirthdayWishesDB";
+      const DB_VERSION = 1;
+      const STORE_NAME = "birthdays";
+      const MAX_VIDEO_BYTES = 60 * 1024 * 1024;
 
-      const pageMap = {
-        make: document.getElementById("makePage"),
-        seal: document.getElementById("sealPage"),
-        sent: document.getElementById("sentPage"),
-        open: document.getElementById("openPage")
-      };
-
-      const tabs = [...document.querySelectorAll(".tab")];
-      const noteInput = document.getElementById("noteInput");
-      const photoInput = document.getElementById("photoInput");
-      const videoInput = document.getElementById("videoInput");
-      const photoStatus = document.getElementById("photoStatus");
-      const videoStatus = document.getElementById("videoStatus");
-      const makeMessage = document.getElementById("makeMessage");
-      const sealMessage = document.getElementById("sealMessage");
-      const sentMessage = document.getElementById("sentMessage");
-      const shareLink = document.getElementById("shareLink");
-      const openShareLink = document.getElementById("openShareLink");
-      const storyContent = document.getElementById("storyContent");
-      const openMessage = document.getElementById("openMessage");
-      const slideCount = document.getElementById("slideCount");
-      const prevButton = document.getElementById("prevButton");
+      const createScreen = document.getElementById("createScreen");
+      const entryScreen = document.getElementById("entryScreen");
+      const wishScreen = document.getElementById("wishScreen");
+      const form = document.getElementById("birthdayForm");
+      const formNotice = document.getElementById("formNotice");
+      const generatedLink = document.getElementById("generatedLink");
+      const createButton = document.getElementById("createButton");
+      const entryForm = document.getElementById("dobForm");
+      const entryNotice = document.getElementById("entryNotice");
+      const stepContent = document.getElementById("stepContent");
       const nextButton = document.getElementById("nextButton");
 
-      let db;
-      let draft = null;
-      let activeStory = null;
-      let currentSlide = 0;
-      let objectUrls = [];
+      let birthday = null;
+      let currentStep = 0;
+      let activeObjectUrls = [];
 
-      function showPage(name) {
-        Object.entries(pageMap).forEach(([key, page]) => {
-          page.classList.toggle("active", key ===*
-
+      function openDatabase() {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+          request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+              db.createObjectStore(STORE_NAME, { keyPath: "id" });
+            }
+          };
+
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async function saveBirthday(record) {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+          const transaction = db.transaction(STORE_NAME, "readwrite");
+          transaction.objectStore(STORE_NAME).put(record);
+          transaction.oncomplete = () => {
+            db.close();
+            resolve();
+          };
+          transaction.onerror = () => {
+            db.close();
+            reject(transaction.error);
+          };
+          transaction.onabort = () => {
+            db.close();
+            reject(transaction.error || new Error("Could not save this birthday."));
+          };
+        });
+      }
+
+      async function getBirthday(id) {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+          const request = db.transaction(STORE_NAME, "readonly")
+            .objectStore(STORE_NAME)
+            .get(id);
+
+          request.onsuccess = () => {
+            const result = request.result || null;
+            db.close();
+            resolve(result);
+          };
+          request.onerror = () => {
+            db.close();
+            reject(request.error);
+          };
+        });
+      }
+
+      function showNotice(element, message, isError = true) {
+        element.textContent = message;
+        element.className = "notice " + (isError ? "error" : "success");
+      }
+
+      function getAge(dateString) {
+        const dob = new Date(dateString + "T00:00:00");
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const birthdayHasPassed =
+          today.getMonth() > dob.getMonth() ||
+          (today.getMonth() === dob.getMonth() && today.getDate() >= dob.getDate());
+
+        if (!birthdayHasPassed) age--;
+        return Math.max(0, age);
+      }
+
+      function clearObjectUrls() {
+        activeObjectUrls.forEach(URL.revokeObjectURL);
+        activeObjectUrls = [];
+      }
+
+      function showStep() {
+        clearObjectUrls();
+
+        const age = getAge(birthday.dob);
+        document.getElementById("ageLabel").textContent =
+          age === 1 ? "Turns 1!" : "Turns " + age + "!";
+        document.getElementById("birthdayTitle").textContent = "Happy Birthday! 🎉";
+
+        if (currentStep === 0) {
+          const videoUrl = URL.createObjectURL(birthday.video);
+          activeObjectUrls.push(videoUrl);
+          stepContent.innerHTML = `
+            <div class="step-indicator">Step 1 of 3 · Your birthday video</div>
+            <video controls playsinline preload="metadata" src="${videoUrl}">
+              Your browser does not support video playback.
+            </video>`;
+          nextButton.textContent = "Next: birthday note →";
+        } else if (currentStep === 1) {
+          stepContent.innerHTML = `
+            <div class="step-indicator">Step 2 of 3 · A note for you</div>
+            <div class="note-display"></div>`;
+          stepContent.querySelector(".note-display").textContent = birthday.note;
+          nextButton.textContent = "Next: your photos →";
+        } else {
+          const images = birthday.photos.map((photo) => {
+            const url = URL.createObjectURL(photo);
+            activeObjectUrls.push(url);
+            return `<img src="${url}" alt="Birthday memory" loading="lazy">`;
+          }).join("");
+
+          stepContent.innerHTML = `
+            <div class="step-indicator">Step 3 of 3 · Your birthday memories</div>
+            <div class="gallery">${images}</div>
+            <p class="center" style="margin-top:22px">Hope your day is filled with love, laughter, and cake! 💖</p>`;
+          nextButton.textContent = "Start again ↺";
+        }
+      }
+
+      function showBirthdayPage() {
+        createScreen.hidden = true;
+        entryScreen.hidden = true;
+        wishScreen.hidden = false;
+        currentStep = 0;
+        showStep();
+      }
+
+      async function loadLink() {
+        const id = location.hash.startsWith("#birthday=")
+          ? decodeURIComponent(location.hash.slice("#birthday=".length))
+          : null;
+
+        if (!id) {
+          createScreen.hidden = false;
+          entryScreen.hidden = true;
+          wishScreen.hidden = true;
+          return;
+        }
+
+        createScreen.hidden = true;
+        wishScreen.hidden = true;
+        entryScreen.hidden = false;
+
+        try {
+          birthday = await getBirthday(id);
+          if (!birthday) {
+            showNotice(entryNotice, "This birthday link isn’t available in this browser. It may have been created on another device or browser.");
+            entryForm.hidden = true;
+            return;
+          }
+          entryForm.hidden = false;
+          entryNotice.className = "notice";
+          entryNotice.textContent = "";
+        } catch (error) {
+          showNotice(entryNotice, "Could not open this birthday. Please make sure you’re using a browser that supports IndexedDB.");
+          entryForm.hidden = true;
+        }
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        formNotice.className = "notice";
+        formNotice.textContent = "";
+        generatedLink.style.display = "none";
+
+        const photos = Array.from(document.getElementById("photos").files || []);
+        const video = document.getElementById("video").files[0];
+        const note = document.getElementById("note").value.trim();
+        const dob = document.getElementById("dob").value;
+
+        if (photos.length !== 5) {
+          showNotice(formNotice, "Please select exactly 5 photos.");
+          return;
+        }
+        if (photos.some((photo) => !photo.type.startsWith("image/"))) {
+          showNotice(formNotice, "Please make sure all five selected files are images.");
+          return;
+        }
+        if (!video || !video.type.startsWith("video/")) {
+          showNotice(formNotice, "Please choose a valid video file.");
+          return;
+        }
+        if (video.size > MAX_VIDEO_BYTES) {
+          showNotice(formNotice, "Your video is larger than 60 MB. Please choose a smaller video.");
+          return;
+        }
+        if (!note || !dob) {
+          showNotice(formNotice, "Please add a birthday note and date of birth.");
+          return;
+        }
+
+        createButton.disabled = true;
+        createButton.textContent = "Saving your surprise…";
+
+        try {
+          const id = (crypto.randomUUID)
+            ? crypto.randomUUID()
+            : Date.now().toString(36) + Math.random().toString(36).slice(2);
+
+          await saveBirthday({
+            id,
+            dob,
+            note,
+            video,
+            photos,
+            createdAt: new Date().toISOString()
+          });
+
+          const shareUrl = location.href.split("#")[0] + "#birthday=" + encodeURIComponent(id);
+          generatedLink.innerHTML = `
+            <strong>Your birthday link is ready! 🎉</strong>
+            <p class="hint">Open it in this same browser and device. Keep this page’s browser data to preserve the uploaded media.</p>
+            <p><a id="shareLink" href="${shareUrl}">${shareUrl}</a></p>
+            <button type="button" class="secondary" id="copyLink">Copy link</button>
+            <a class="button" href="${shareUrl}">Preview surprise</a>`;
+          generatedLink.style.display = "block";
+          showNotice(formNotice, "Birthday surprise saved in this browser.", false);
+
+          document.getElementById("copyLink").addEventListener("click", async () => {
+            try {
+              await navigator.clipboard.writeText(shareUrl);
+              document.getElementById("copyLink").textContent = "Copied! ✓";
+            } catch {
+              showNotice(formNotice, "Copy wasn’t available. Select and copy the link above.", true);
+            }
+          });
+        } catch (error) {
+          console.error(error);
+          showNotice(formNotice, "Could not save the birthday. Your browser may not have enough storage space.");
+        } finally {
+          createButton.disabled = false;
+          createButton.textContent = "Create birthday link ✨";
+        }
+      });
+
+      entryForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (document.getElementById("entryDob").value === birthday.dob) {
+          showBirthdayPage();
+        } else {
+          showNotice(entryNotice, "That date doesn’t match. Please check the date of birth and try again.");
+        }
+      });
+
+      nextButton.addEventListener("click", () => {
+        if (currentStep < 2) {
+          currentStep++;
+          showStep();
+        } else {
+          currentStep = 0;
+          showStep();
+        }
+      });
+
+      window.addEventListener("hashchange", loadLink);
+      window.addEventListener("beforeunload", clearObjectUrls);
+      loadLink();
+    })();
+  </script>
+</body>
+</html>
