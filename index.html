@@ -252,6 +252,10 @@
       line-height: 1.5;
     }
 
+    body.shared-view .tabs {
+      display: none;
+    }
+
     @media (max-width: 620px) {
       .tabs { justify-content: center; }
       .tab { flex: 1 1 120px; }
@@ -270,7 +274,7 @@
     <section id="makePage" class="page active">
       <div class="panel">
         <h2>Make</h2>
-        <p class="sub">Upload 1 note, multiple photos, and one video up to 60 MB.</p>
+        <p class="sub">Upload a birthday note, several photos, and one video up to 60 MB.</p>
 
         <div class="field">
           <label for="noteInput">Birthday note</label>
@@ -303,7 +307,6 @@
       <div class="panel">
         <h2>Seal</h2>
         <p class="sub">Your birthday content is saved as a draft.</p>
-
         <div id="sealMessage" class="success"></div>
         <div class="actions">
           <button id="sealToMake" type="button" class="secondary">Back to Make</button>
@@ -342,7 +345,7 @@
     const DB_NAME = "birthdayStoryApp";
     const STORE_NAME = "birthdayStore";
     const DRAFT_KEY = "draft";
-    const SUBMISSIONS_KEY = "submissions";
+    const MAX_VIDEO_SIZE = 60 * 1024 * 1024;
 
     const tabs = document.querySelectorAll(".tab");
     const pages = {
@@ -365,10 +368,7 @@
     const openMessage = document.getElementById("openMessage");
     const openStory = document.getElementById("openStory");
 
-    const MAX_VIDEO_SIZE = 60 * 1024 * 1024;
-
     let db;
-    let selectedDraft = null;
 
     function setTab(name) {
       tabs.forEach(btn => btn.classList.toggle("active", btn.dataset.tab === name));
@@ -412,214 +412,5 @@
         };
 
         request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
-    }
-
-    function readDataByKey(key) {
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, "readonly");
-        const store = tx.objectStore(STORE_NAME);
-        const req = store.get(key);
-
-        req.onsuccess = () => resolve(req.result ? req.result.value : null);
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    function saveDataByKey(key, value) {
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, "readwrite");
-        const store = tx.objectStore(STORE_NAME);
-        const req = store.put({ id: key, value });
-
-        req.onsuccess = () => resolve();
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    function readSubmission(id) {
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, "readonly");
-        const store = tx.objectStore(STORE_NAME);
-        const req = store.get(`submission:${id}`);
-
-        req.onsuccess = () => resolve(req.result ? req.result.value : null);
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    function saveSubmission(id, payload) {
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, "readwrite");
-        const store = tx.objectStore(STORE_NAME);
-        const req = store.put({ id: `submission:${id}`, value: payload });
-
-        req.onsuccess = () => resolve();
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    function fileToDataUrl(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
-      });
-    }
-
-    async function collectDraftFromForm() {
-      const note = noteInput.value.trim();
-      const photos = Array.from(photoInput.files || []);
-      const video = videoInput.files[0];
-
-      if (!note) throw new Error("Please add a birthday note.");
-      if (!photos.length) throw new Error("Please upload at least one photo.");
-      if (!video) throw new Error("Please upload one video.");
-      if (video.size > MAX_VIDEO_SIZE) throw new Error("Video must be 60 MB or smaller.");
-
-      const photoData = await Promise.all(photos.map(file => fileToDataUrl(file)));
-      const videoData = await fileToDataUrl(video);
-
-      return {
-        note,
-        photos: photoData,
-        video: videoData,
-        createdAt: new Date().toISOString()
-      };
-    }
-
-    async function sealDraft() {
-      try {
-        const payload = await collectDraftFromForm();
-        await saveDataByKey(DRAFT_KEY, payload);
-        selectedDraft = payload;
-        sealMessage.textContent = "Your birthday content has been sealed and saved.";
-        setTab("seal");
-      } catch (err) {
-        makeError.textContent = err.message || "Unable to seal your content.";
-      }
-    }
-
-    async function submitContent() {
-      try {
-        const payload = await collectDraftFromForm();
-        const id = generateId();
-        await saveSubmission(id, payload);
-        const share = buildShareUrl(id);
-        shareUrlInput.value = share;
-        sentMessage.textContent = "Your birthday message was sent successfully.";
-        setTab("sent");
-      } catch (err) {
-        makeError.textContent = err.message || "Unable to submit your content.";
-      }
-    }
-
-    function generateId() {
-      return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
-    }
-
-    function buildShareUrl(id) {
-      const url = new URL(window.location.href);
-      url.hash = `share=${id}`;
-      return url.toString();
-    }
-
-    async function loadSavedDraft() {
-      const data = await readDataByKey(DRAFT_KEY);
-      if (data) {
-        selectedDraft = data;
-        noteInput.value = data.note || "";
-        photoStatus.textContent = `${data.photos.length} saved photo(s) ready to reuse.`;
-        videoStatus.textContent = "Saved video is ready to reuse.";
-      }
-    }
-
-    function renderOpenStory(payload) {
-      openStory.innerHTML = "";
-
-      const videoBox = document.createElement("video");
-      videoBox.controls = true;
-      videoBox.playsInline = true;
-      videoBox.src = payload.video;
-      videoBox.style.width = "100%";
-      videoBox.style.maxHeight = "70vh";
-
-      const noteBox = document.createElement("div");
-      noteBox.className = "note";
-      noteBox.textContent = payload.note;
-
-      const gallery = document.createElement("div");
-      gallery.className = "gallery";
-
-      payload.photos.forEach((photoData, idx) => {
-        const img = document.createElement("img");
-        img.src = photoData;
-        img.alt = `Birthday memory ${idx + 1}`;
-        gallery.appendChild(img);
-      });
-
-      openStory.appendChild(videoBox);
-      openStory.appendChild(noteBox);
-      openStory.appendChild(gallery);
-    }
-
-    function handleShareUrlOpen() {
-      const hash = window.location.hash || "";
-      const match = hash.match(/share=([^&]+)/);
-      if (!match) {
-        setTab("make");
-        return;
-      }
-      const id = match[1];
-      readSubmission(id).then(payload => {
-        if (!payload) {
-          openMessage.textContent = "This shared URL has no submitted content.";
-          return;
-        }
-        openMessage.textContent = "This is the submitted birthday story.";
-        renderOpenStory(payload);
-        setTab("open");
-      }).catch(err => {
-        console.error(err);
-        openMessage.textContent = "Could not open this shared story.";
-      });
-    }
-
-    document.getElementById("sealButton").addEventListener("click", sealDraft);
-    document.getElementById("submitButton").addEventListener("click", submitContent);
-    document.getElementById("sealToMake").addEventListener("click", () => setTab("make"));
-    document.getElementById("copyUrlButton").addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(shareUrlInput.value);
-        sentMessage.textContent = "URL copied to clipboard.";
-      } catch {
-        sentMessage.textContent = "Copy failed. Please select the URL and copy it manually.";
-      }
-    });
-
-    document.getElementById("openSentUrlButton").addEventListener("click", () => {
-      if (!shareUrlInput.value) {
-        sentMessage.textContent = "No URL available yet.";
-        return;
-      }
-      window.open(shareUrlInput.value, "_blank");
-    });
-
-    async function init() {
-      db = await openDatabase();
-      await loadSavedDraft();
-
-      const hash = window.location.hash || "";
-      if (hash.includes("share=")) {
-        handleShareUrlOpen();
-      } else {
-        setTab("make");
-      }
-    }
-
-    init();
-  </script>
-</body>
-</html>
+        request.onerror = () => reject*
+
