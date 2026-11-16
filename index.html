@@ -3,216 +3,623 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Birthday Surprise</title>
+  <title>Birthday Story Builder</title>
   <style>
     :root {
-      --pink: #e94d87;
-      --purple: #8056c7;
-      --text: #382842;
-      --muted: #705f76;
-      --bg1: #fff0f5;
-      --bg2: #f1eaff;
+      --bg1: #fff3f8;
+      --bg2: #f3ebff;
+      --card: rgba(255,255,255,0.9);
+      --pink: #f06292;
+      --purple: #7c5ce6;
+      --ink: #2d1e38;
+      --muted: #6f5b76;
+      --line: #e9dff3;
+      --danger: #b42345;
+      --green: #2d9b5b;
     }
 
     * { box-sizing: border-box; }
 
-    body {
+    html, body {
       margin: 0;
       min-height: 100vh;
-      padding: 24px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--ink);
+    }
+
+    body {
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
+      padding: 20px;
     }
 
-    .card {
-      width: min(900px, 100%);
-      padding: clamp(20px, 5vw, 42px);
+    .app {
+      width: min(980px, 100%);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.8);
       border-radius: 28px;
-      background: rgba(255,255,255,0.9);
-      box-shadow: 0 20px 60px rgba(90, 53, 112, 0.15);
-      border: 1px solid rgba(255,255,255,0.9);
+      box-shadow: 0 20px 60px rgba(58, 30, 72, 0.16);
+      padding: 18px 18px 24px;
     }
 
-    h1 {
-      margin: 0 0 14px;
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.8);
+      color: var(--ink);
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 130px;
+      font-size: 1rem;
+      transition: 0.2s ease;
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 8px 18px rgba(124, 92, 230, 0.25);
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel {
+      padding: 12px 10px 4px;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
       color: var(--pink);
       text-align: center;
-      font-size: clamp(2rem, 6vw, 3rem);
     }
 
-    .subtitle {
+    .sub {
+      text-align: center;
       color: var(--muted);
-      text-align: center;
-      margin: 0 0 20px;
+      margin: 0 0 22px;
       line-height: 1.6;
     }
 
-    .photos {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin: 24px 0 30px;
+    .field {
+      margin: 18px 0;
     }
 
-    .photos img {
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    textarea, input[type="file"] {
       width: 100%;
-      height: 240px;
-      object-fit: cover;
-      border-radius: 16px;
-      background: #f5edf8;
-      box-shadow: 0 8px 24px rgba(56, 40, 66, 0.12);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: white;
+      color: var(--ink);
+      padding: 14px 16px;
+      font: inherit;
     }
 
-    .cake {
-      font-size: clamp(4rem, 12vw, 6rem);
-      text-align: center;
-      margin: 10px 0 4px;
+    textarea {
+      min-height: 130px;
+      resize: vertical;
     }
 
-    .wish-title {
-      text-align: center;
-      font-size: clamp(1.3rem, 4vw, 2rem);
-      margin: 0 0 12px;
-    }
-
-    .note {
-      max-width: 700px;
-      margin: 0 auto 24px;
-      text-align: center;
-      font-size: clamp(1.15rem, 3vw, 1.8rem);
-      line-height: 1.6;
-      white-space: pre-wrap;
+    .hint, .selected-files {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
       overflow-wrap: anywhere;
+    }
+
+    .error {
+      min-height: 20px;
+      color: var(--danger);
+      margin-top: 10px;
+      font-size: 0.95rem;
+    }
+
+    .success {
+      min-height: 20px;
+      color: var(--green);
+      margin-top: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
     }
 
     .actions {
       display: flex;
       justify-content: center;
-      margin-top: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
     }
 
     button {
       border: none;
       border-radius: 999px;
-      color: #fff;
-      background: linear-gradient(110deg, var(--pink), var(--purple));
+      color: white;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      padding: 13px 22px;
       font: inherit;
       font-weight: 700;
-      padding: 13px 24px;
       cursor: pointer;
-      box-shadow: 0 8px 18px rgba(132, 86, 216, 0.2);
+      box-shadow: 0 10px 20px rgba(124, 92, 230, 0.18);
+      transition: transform 0.2s ease;
     }
 
-    button:hover {
-      filter: brightness(1.05);
+    button:hover { transform: translateY(-1px); }
+
+    button.secondary {
+      background: #f5eefb;
+      color: var(--ink);
+      box-shadow: none;
     }
 
-    .video-section {
-      display: none;
-      margin-top: 10px;
-      text-align: center;
+    .result-box {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-top: 14px;
+      word-break: break-all;
+      color: var(--ink);
     }
 
-    .video-section.active {
-      display: block;
-    }
-
-    .video-box {
-      max-width: 720px;
-      margin: 0 auto;
-    }
-
-    video {
-      display: block;
+    .result-box input {
       width: 100%;
+      border: none;
+      background: transparent;
+      font: inherit;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .story {
+      min-height: 360px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      padding: 18px;
+      background: linear-gradient(135deg, #fff8fb, #f6efff);
+      border: 1px solid var(--line);
+    }
+
+    .story video, .story img {
+      display: block;
+      max-width: 100%;
       max-height: 70vh;
-      border-radius: 18px;
+      border-radius: 16px;
       background: #111;
     }
 
-    @media (max-width: 520px) {
-      .photos img {
-        height: 200px;
-      }
+    .story .note {
+      max-width: 720px;
+      text-align: center;
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .story .gallery {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .story .gallery img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 9px 22px rgba(51, 27, 62, 0.12);
+    }
+
+    .story .icon {
+      font-size: clamp(4rem, 12vw, 7rem);
+      text-align: center;
+    }
+
+    .share-note {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 620px) {
+      .tabs { justify-content: center; }
+      .tab { flex: 1 1 120px; }
     }
   </style>
 </head>
 <body>
-  <main class="card">
-    <h1>Happy Birthday! 🎉</h1>
-    <p class="subtitle">Here are some special memories for you.</p>
-
-    <div id="photoGallery" class="photos"></div>
-
-    <div class="cake" aria-label="Birthday cake">🎂</div>
-    <h2 class="wish-title">A birthday wish for you</h2>
-    <p id="birthdayNote" class="note"></p>
-
-    <div class="actions">
-      <button id="nextButton" type="button">Next →</button>
+  <div class="app">
+    <div class="tabs">
+      <button class="tab active" data-tab="make">🛠️ Make</button>
+      <button class="tab" data-tab="seal">🧿 Seal</button>
+      <button class="tab" data-tab="sent">📤 Sent</button>
+      <button class="tab" data-tab="open">🔓 Open</button>
     </div>
 
-    <div id="videoSection" class="video-section">
-      <h2>One More Surprise 🎥</h2>
-      <div class="video-box">
-        <video id="birthdayVideo" controls playsinline preload="metadata">
-          Your browser does not support the video tag.
-        </video>
+    <section id="makePage" class="page active">
+      <div class="panel">
+        <h2>Make</h2>
+        <p class="sub">Upload 1 note, multiple photos, and one video up to 60 MB.</p>
+
+        <div class="field">
+          <label for="noteInput">Birthday note</label>
+          <textarea id="noteInput" placeholder="Happy Birthday! ..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="photoInput">Photos</label>
+          <input id="photoInput" type="file" accept="image/*" multiple />
+          <p id="photoStatus" class="selected-files">No photos selected.</p>
+        </div>
+
+        <div class="field">
+          <label for="videoInput">Video (max 60 MB)</label>
+          <input id="videoInput" type="file" accept="video/*" />
+          <p id="videoStatus" class="selected-files">No video selected.</p>
+        </div>
+
+        <div id="makeError" class="error"></div>
+        <div id="makeSuccess" class="success"></div>
+
+        <div class="actions">
+          <button id="sealButton" class="secondary" type="button">Seal</button>
+          <button id="submitButton" type="button">Sent</button>
+        </div>
       </div>
-    </div>
-  </main>
+    </section>
+
+    <section id="sealPage" class="page">
+      <div class="panel">
+        <h2>Seal</h2>
+        <p class="sub">Your birthday content is saved as a draft.</p>
+
+        <div id="sealMessage" class="success"></div>
+        <div class="actions">
+          <button id="sealToMake" type="button" class="secondary">Back to Make</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="sentPage" class="page">
+      <div class="panel">
+        <h2>Sent</h2>
+        <p class="sub">This is your shareable URL.</p>
+
+        <div id="sentMessage" class="success"></div>
+
+        <div class="result-box">
+          <input id="shareUrl" readonly value="" />
+        </div>
+
+        <div class="actions">
+          <button id="copyUrlButton" type="button" class="secondary">Copy URL</button>
+          <button id="openSentUrlButton" type="button">Open URL</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="openPage" class="page">
+      <div class="panel">
+        <h2>Open</h2>
+        <p id="openMessage" class="share-note"></p>
+        <div id="openStory" class="story"></div>
+      </div>
+    </section>
+  </div>
 
   <script>
-    /*
-      Replace these with your own online media paths.
-      Make sure the files are uploaded to your hosting service and accessible publicly.
-      Example folder:
-        index.html
-        media/
-          photo1.jpg
-          photo2.jpg
-          birthday-video.mp4
-    */
+    const DB_NAME = "birthdayStoryApp";
+    const STORE_NAME = "birthdayStore";
+    const DRAFT_KEY = "draft";
+    const SUBMISSIONS_KEY = "submissions";
 
-    const birthdayContent = {
-      photos: [
-        "media/photo1.jpg",
-        "media/photo2.jpg",
-        "media/photo3.jpg"
-      ],
-      note: "Happy Birthday! Wishing you a life full of joy, success, laughter, and endless beautiful memories. May every dream you hold come true and may your heart always be full of happiness.",
-      video: "media/birthday-video.mp4"
+    const tabs = document.querySelectorAll(".tab");
+    const pages = {
+      make: document.getElementById("makePage"),
+      seal: document.getElementById("sealPage"),
+      sent: document.getElementById("sentPage"),
+      open: document.getElementById("openPage")
     };
 
-    const photoGallery = document.getElementById("photoGallery");
-    const birthdayNote = document.getElementById("birthdayNote");
-    const nextButton = document.getElementById("nextButton");
-    const videoSection = document.getElementById("videoSection");
-    const birthdayVideo = document.getElementById("birthdayVideo");
+    const noteInput = document.getElementById("noteInput");
+    const photoInput = document.getElementById("photoInput");
+    const videoInput = document.getElementById("videoInput");
+    const photoStatus = document.getElementById("photoStatus");
+    const videoStatus = document.getElementById("videoStatus");
+    const makeError = document.getElementById("makeError");
+    const makeSuccess = document.getElementById("makeSuccess");
+    const sealMessage = document.getElementById("sealMessage");
+    const sentMessage = document.getElementById("sentMessage");
+    const shareUrlInput = document.getElementById("shareUrl");
+    const openMessage = document.getElementById("openMessage");
+    const openStory = document.getElementById("openStory");
 
-    function loadMedia() {
-      birthdayContent.photos.forEach((photoUrl, index) => {
-        const img = document.createElement("img");
-        img.src = photoUrl;
-        img.alt = `Birthday memory ${index + 1}`;
-        img.loading = "lazy";
-        photoGallery.appendChild(img);
-      });
+    const MAX_VIDEO_SIZE = 60 * 1024 * 1024;
 
-      birthdayNote.textContent = birthdayContent.note;
-      birthdayVideo.src = birthdayContent.video;
+    let db;
+    let selectedDraft = null;
+
+    function setTab(name) {
+      tabs.forEach(btn => btn.classList.toggle("active", btn.dataset.tab === name));
+      Object.keys(pages).forEach(key => pages[key].classList.toggle("active", key === name));
     }
 
-    nextButton.addEventListener("click", () => {
-      videoSection.classList.add("active");
-      nextButton.style.display = "none";
-      birthdayVideo.play();
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => setTab(tab.dataset.tab));
     });
 
-    loadMedia();
+    photoInput.addEventListener("change", () => {
+      const files = Array.from(photoInput.files || []);
+      photoStatus.textContent = files.length ? `${files.length} photo(s) selected.` : "No photos selected.";
+      makeError.textContent = "";
+      makeSuccess.textContent = "";
+    });
+
+    videoInput.addEventListener("change", () => {
+      const file = videoInput.files[0];
+      if (file && file.size > MAX_VIDEO_SIZE) {
+        makeError.textContent = "Please choose a video of 60 MB or smaller.";
+        videoInput.value = "";
+        videoStatus.textContent = "No video selected.";
+        return;
+      }
+      videoStatus.textContent = file ? `Selected: ${file.name}` : "No video selected.";
+      makeError.textContent = "";
+      makeSuccess.textContent = "";
+    });
+
+    function openDatabase() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+
+        request.onupgradeneeded = () => {
+          const database = request.result;
+          if (!database.objectStoreNames.contains(STORE_NAME)) {
+            const store = database.createObjectStore(STORE_NAME, { keyPath: "id" });
+            store.createIndex("type", "type");
+          }
+        };
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function readDataByKey(key) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readonly");
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.get(key);
+
+        req.onsuccess = () => resolve(req.result ? req.result.value : null);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function saveDataByKey(key, value) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.put({ id: key, value });
+
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function readSubmission(id) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readonly");
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.get(`submission:${id}`);
+
+        req.onsuccess = () => resolve(req.result ? req.result.value : null);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function saveSubmission(id, payload) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.put({ id: `submission:${id}`, value: payload });
+
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function collectDraftFromForm() {
+      const note = noteInput.value.trim();
+      const photos = Array.from(photoInput.files || []);
+      const video = videoInput.files[0];
+
+      if (!note) throw new Error("Please add a birthday note.");
+      if (!photos.length) throw new Error("Please upload at least one photo.");
+      if (!video) throw new Error("Please upload one video.");
+      if (video.size > MAX_VIDEO_SIZE) throw new Error("Video must be 60 MB or smaller.");
+
+      const photoData = await Promise.all(photos.map(file => fileToDataUrl(file)));
+      const videoData = await fileToDataUrl(video);
+
+      return {
+        note,
+        photos: photoData,
+        video: videoData,
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    async function sealDraft() {
+      try {
+        const payload = await collectDraftFromForm();
+        await saveDataByKey(DRAFT_KEY, payload);
+        selectedDraft = payload;
+        sealMessage.textContent = "Your birthday content has been sealed and saved.";
+        setTab("seal");
+      } catch (err) {
+        makeError.textContent = err.message || "Unable to seal your content.";
+      }
+    }
+
+    async function submitContent() {
+      try {
+        const payload = await collectDraftFromForm();
+        const id = generateId();
+        await saveSubmission(id, payload);
+        const share = buildShareUrl(id);
+        shareUrlInput.value = share;
+        sentMessage.textContent = "Your birthday message was sent successfully.";
+        setTab("sent");
+      } catch (err) {
+        makeError.textContent = err.message || "Unable to submit your content.";
+      }
+    }
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+    }
+
+    function buildShareUrl(id) {
+      const url = new URL(window.location.href);
+      url.hash = `share=${id}`;
+      return url.toString();
+    }
+
+    async function loadSavedDraft() {
+      const data = await readDataByKey(DRAFT_KEY);
+      if (data) {
+        selectedDraft = data;
+        noteInput.value = data.note || "";
+        photoStatus.textContent = `${data.photos.length} saved photo(s) ready to reuse.`;
+        videoStatus.textContent = "Saved video is ready to reuse.";
+      }
+    }
+
+    function renderOpenStory(payload) {
+      openStory.innerHTML = "";
+
+      const videoBox = document.createElement("video");
+      videoBox.controls = true;
+      videoBox.playsInline = true;
+      videoBox.src = payload.video;
+      videoBox.style.width = "100%";
+      videoBox.style.maxHeight = "70vh";
+
+      const noteBox = document.createElement("div");
+      noteBox.className = "note";
+      noteBox.textContent = payload.note;
+
+      const gallery = document.createElement("div");
+      gallery.className = "gallery";
+
+      payload.photos.forEach((photoData, idx) => {
+        const img = document.createElement("img");
+        img.src = photoData;
+        img.alt = `Birthday memory ${idx + 1}`;
+        gallery.appendChild(img);
+      });
+
+      openStory.appendChild(videoBox);
+      openStory.appendChild(noteBox);
+      openStory.appendChild(gallery);
+    }
+
+    function handleShareUrlOpen() {
+      const hash = window.location.hash || "";
+      const match = hash.match(/share=([^&]+)/);
+      if (!match) {
+        setTab("make");
+        return;
+      }
+      const id = match[1];
+      readSubmission(id).then(payload => {
+        if (!payload) {
+          openMessage.textContent = "This shared URL has no submitted content.";
+          return;
+        }
+        openMessage.textContent = "This is the submitted birthday story.";
+        renderOpenStory(payload);
+        setTab("open");
+      }).catch(err => {
+        console.error(err);
+        openMessage.textContent = "Could not open this shared story.";
+      });
+    }
+
+    document.getElementById("sealButton").addEventListener("click", sealDraft);
+    document.getElementById("submitButton").addEventListener("click", submitContent);
+    document.getElementById("sealToMake").addEventListener("click", () => setTab("make"));
+    document.getElementById("copyUrlButton").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(shareUrlInput.value);
+        sentMessage.textContent = "URL copied to clipboard.";
+      } catch {
+        sentMessage.textContent = "Copy failed. Please select the URL and copy it manually.";
+      }
+    });
+
+    document.getElementById("openSentUrlButton").addEventListener("click", () => {
+      if (!shareUrlInput.value) {
+        sentMessage.textContent = "No URL available yet.";
+        return;
+      }
+      window.open(shareUrlInput.value, "_blank");
+    });
+
+    async function init() {
+      db = await openDatabase();
+      await loadSavedDraft();
+
+      const hash = window.location.hash || "";
+      if (hash.includes("share=")) {
+        handleShareUrlOpen();
+      } else {
+        setTab("make");
+      }
+    }
+
+    init();
   </script>
 </body>
 </html>
