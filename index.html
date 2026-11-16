@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Birthday Surprise</title>
   <style>
     :root {
@@ -10,153 +10,130 @@
       --purple: #8056c7;
       --text: #382842;
       --muted: #705f76;
+      --bg1: #fff0f5;
+      --bg2: #f1eaff;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
-      min-height: 100vh;
       margin: 0;
-      padding: 20px;
+      min-height: 100vh;
+      padding: 24px;
       display: grid;
       place-items: center;
-      color: var(--text);
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #fff0f5, #f1eaff);
+      color: var(--text);
     }
 
     .card {
-      width: min(850px, 100%);
-      padding: clamp(22px, 5vw, 42px);
-      border: 1px solid rgba(255, 255, 255, .9);
-      border-radius: 26px;
-      background: rgba(255, 255, 255, .9);
-      box-shadow: 0 20px 60px rgba(90, 53, 112, .16);
-      text-align: center;
-    }
-
-    [hidden] {
-      display: none !important;
+      width: min(900px, 100%);
+      padding: clamp(20px, 5vw, 42px);
+      border-radius: 28px;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 20px 60px rgba(90, 53, 112, 0.15);
+      border: 1px solid rgba(255,255,255,0.9);
     }
 
     h1 {
-      margin: 0 0 22px;
+      margin: 0 0 14px;
       color: var(--pink);
+      text-align: center;
       font-size: clamp(2rem, 6vw, 3rem);
     }
 
-    .login-form {
-      width: min(380px, 100%);
-      margin: auto;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 9px;
-      text-align: left;
-      font-weight: 700;
-    }
-
-    input[type="date"] {
-      width: 100%;
-      padding: 13px 15px;
-      border: 1px solid #dfd2e8;
-      border-radius: 12px;
-      background: white;
-      color: var(--text);
-      font: inherit;
-    }
-
-    button {
-      padding: 13px 24px;
-      border: 0;
-      border-radius: 999px;
-      color: white;
-      background: linear-gradient(110deg, var(--pink), var(--purple));
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 8px 18px rgba(132, 86, 216, .2);
-    }
-
-    button:hover {
-      filter: brightness(1.05);
-    }
-
-    button:focus-visible,
-    input:focus-visible {
-      outline: 3px solid #bd9cf2;
-      outline-offset: 3px;
-    }
-
-    .login-button {
-      margin-top: 20px;
-    }
-
-    .error {
-      min-height: 1.5em;
-      color: #b42345;
-      text-align: left;
-      font-size: .92rem;
-    }
-
-    .muted {
+    .subtitle {
       color: var(--muted);
+      text-align: center;
+      margin: 0 0 20px;
       line-height: 1.6;
     }
 
     .photos {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px;
-      margin: 26px 0;
+      gap: 16px;
+      margin: 24px 0 30px;
     }
 
     .photos img {
-      display: block;
       width: 100%;
       height: 240px;
       object-fit: cover;
       border-radius: 16px;
-      background: #f3edf6;
-      box-shadow: 0 8px 22px rgba(56, 40, 66, .12);
+      background: #f5edf8;
+      box-shadow: 0 8px 24px rgba(56, 40, 66, 0.12);
     }
 
     .cake {
-      margin: 24px 0 6px;
       font-size: clamp(4rem, 12vw, 6rem);
-      line-height: 1.2;
+      text-align: center;
+      margin: 10px 0 4px;
+    }
+
+    .wish-title {
+      text-align: center;
+      font-size: clamp(1.3rem, 4vw, 2rem);
+      margin: 0 0 12px;
     }
 
     .note {
-      max-width: 680px;
-      margin: 12px auto 26px;
-      font-size: clamp(1.2rem, 4vw, 1.8rem);
+      max-width: 700px;
+      margin: 0 auto 24px;
+      text-align: center;
+      font-size: clamp(1.15rem, 3vw, 1.8rem);
       line-height: 1.6;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
 
-    .video-frame {
+    .actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(110deg, var(--pink), var(--purple));
+      font: inherit;
+      font-weight: 700;
+      padding: 13px 24px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(132, 86, 216, 0.2);
+    }
+
+    button:hover {
+      filter: brightness(1.05);
+    }
+
+    .video-section {
+      display: none;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .video-section.active {
+      display: block;
+    }
+
+    .video-box {
       max-width: 720px;
-      margin: 24px auto;
+      margin: 0 auto;
     }
 
     video {
       display: block;
       width: 100%;
       max-height: 70vh;
-      border-radius: 16px;
+      border-radius: 18px;
       background: #111;
     }
 
     @media (max-width: 520px) {
-      body {
-        padding: 12px;
-      }
-
       .photos img {
         height: 200px;
       }
@@ -165,105 +142,77 @@
 </head>
 <body>
   <main class="card">
-    <!-- Login page: date of birth and Login button -->
-    <section id="loginPage">
-      <form id="loginForm" class="login-form">
-        <label for="dobInput">Date of birth</label>
-        <input id="dobInput" type="date" required />
-        <p id="errorMessage" class="error" role="alert"></p>
-        <button class="login-button" type="submit">Login</button>
-      </form>
-    </section>
+    <h1>Happy Birthday! 🎉</h1>
+    <p class="subtitle">Here are some special memories for you.</p>
 
-    <!-- Birthday website: photos, cake, and note -->
-    <section id="birthdayPage" hidden>
-      <h1>Happy Birthday! 🎉</h1>
-      <p class="muted">Here are some special memories for you.</p>
+    <div id="photoGallery" class="photos"></div>
 
-      <div id="photoGallery" class="photos"></div>
+    <div class="cake" aria-label="Birthday cake">🎂</div>
+    <h2 class="wish-title">A birthday wish for you</h2>
+    <p id="birthdayNote" class="note"></p>
 
-      <div class="cake" role="img" aria-label="Birthday cake">🎂</div>
-      <h2>A birthday wish for you</h2>
-      <p id="birthdayNote" class="note"></p>
-
+    <div class="actions">
       <button id="nextButton" type="button">Next →</button>
-    </section>
+    </div>
 
-    <!-- Video page -->
-    <section id="videoPage" hidden>
-      <h1>One More Surprise 🎥</h1>
-      <div class="video-frame">
+    <div id="videoSection" class="video-section">
+      <h2>One More Surprise 🎥</h2>
+      <div class="video-box">
         <video id="birthdayVideo" controls playsinline preload="metadata">
-          Your browser does not support video playback.
+          Your browser does not support the video tag.
         </video>
       </div>
-    </section>
+    </div>
   </main>
 
   <script>
-    // Change these example values before publishing the website.
-    const BIRTHDAY = {
-      // Format: YYYY-MM-DD
-      dateOfBirth: "2000-05-21",
+    /*
+      Replace these with your own online media paths.
+      Make sure the files are uploaded to your hosting service and accessible publicly.
+      Example folder:
+        index.html
+        media/
+          photo1.jpg
+          photo2.jpg
+          birthday-video.mp4
+    */
 
-      // Upload these files online and use their paths here.
+    const birthdayContent = {
       photos: [
         "media/photo1.jpg",
-        "media/photo2.jpg"
+        "media/photo2.jpg",
+        "media/photo3.jpg"
       ],
-
-      note: "Happy Birthday! Wishing you a wonderful day filled with happiness, laughter, and all the things you love.",
-
+      note: "Happy Birthday! Wishing you a life full of joy, success, laughter, and endless beautiful memories. May every dream you hold come true and may your heart always be full of happiness.",
       video: "media/birthday-video.mp4"
     };
 
-    const loginPage = document.getElementById("loginPage");
-    const birthdayPage = document.getElementById("birthdayPage");
-    const videoPage = document.getElementById("videoPage");
-    const loginForm = document.getElementById("loginForm");
-    const dobInput = document.getElementById("dobInput");
-    const errorMessage = document.getElementById("errorMessage");
     const photoGallery = document.getElementById("photoGallery");
     const birthdayNote = document.getElementById("birthdayNote");
+    const nextButton = document.getElementById("nextButton");
+    const videoSection = document.getElementById("videoSection");
     const birthdayVideo = document.getElementById("birthdayVideo");
 
-    function showPage(pageToShow) {
-      [loginPage, birthdayPage, videoPage].forEach(page => {
-        page.hidden = page !== pageToShow;
-      });
-    }
-
-    function prepareBirthdayWebsite() {
-      photoGallery.replaceChildren();
-
-      BIRTHDAY.photos.forEach((photoUrl, index) => {
-        const image = document.createElement("img");
-        image.src = photoUrl;
-        image.alt = `Birthday photo ${index + 1}`;
-        image.loading = "lazy";
-        photoGallery.appendChild(image);
+    function loadMedia() {
+      birthdayContent.photos.forEach((photoUrl, index) => {
+        const img = document.createElement("img");
+        img.src = photoUrl;
+        img.alt = `Birthday memory ${index + 1}`;
+        img.loading = "lazy";
+        photoGallery.appendChild(img);
       });
 
-      birthdayNote.textContent = BIRTHDAY.note;
-      birthdayVideo.src = BIRTHDAY.video;
+      birthdayNote.textContent = birthdayContent.note;
+      birthdayVideo.src = birthdayContent.video;
     }
 
-    loginForm.addEventListener("submit", event => {
-      event.preventDefault();
-      errorMessage.textContent = "";
-
-      if (dobInput.value !== BIRTHDAY.dateOfBirth) {
-        errorMessage.textContent = "The date of birth is incorrect. Please try again.";
-        return;
-      }
-
-      prepareBirthdayWebsite();
-      showPage(birthdayPage);
+    nextButton.addEventListener("click", () => {
+      videoSection.classList.add("active");
+      nextButton.style.display = "none";
+      birthdayVideo.play();
     });
 
-    document.getElementById("nextButton").addEventListener("click", () => {
-      showPage(videoPage);
-    });
+    loadMedia();
   </script>
 </body>
 </html>
