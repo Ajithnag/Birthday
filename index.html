@@ -3,96 +3,116 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Birthday Surprise</title>
+  <title>Birthday Surprise Builder</title>
   <style>
     :root {
-      --pink: #e94d87;
-      --purple: #8056c7;
-      --ink: #382842;
-      --muted: #705f76;
-      --line: #e5d9ec;
+      --bg1: #fff3f8;
+      --bg2: #f1eaff;
+      --card: rgba(255,255,255,0.92);
+      --pink: #f06292;
+      --purple: #7c5ce6;
+      --ink: #2d1e38;
+      --muted: #6f5b76;
+      --line: #eadff5;
+      --danger: #b42345;
+      --success: #237d4b;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--ink);
+    }
 
     body {
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
       display: grid;
       place-items: center;
-      color: var(--ink);
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #fff0f5, #f1eaff);
+      padding: 20px;
     }
 
     .app {
-      width: min(900px, 100%);
-      padding: clamp(18px, 4vw, 36px);
-      border: 1px solid rgba(255,255,255,.9);
-      border-radius: 26px;
-      background: rgba(255,255,255,.93);
-      box-shadow: 0 20px 60px rgba(90,53,112,.16);
+      width: min(1000px, 100%);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 28px;
+      box-shadow: 0 18px 48px rgba(58, 30, 72, 0.14);
+      padding: 18px 18px 24px;
     }
 
     .tabs {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
 
     body.shared-view .tabs {
       display: none;
     }
 
-    .step {
-      min-width: 115px;
-      padding: 12px 16px;
+    .tab {
       border: 1px solid var(--line);
-      border-radius: 15px;
-      background: #fff;
+      background: white;
       color: var(--ink);
+      border-radius: 16px;
+      min-width: 120px;
+      padding: 12px 18px;
       font: inherit;
       font-weight: 700;
       cursor: pointer;
+      transition: 0.2s ease;
     }
 
-    .step.active {
+    .tab.active {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
       border-color: transparent;
       color: white;
-      background: linear-gradient(110deg, var(--pink), var(--purple));
-      box-shadow: 0 8px 18px rgba(132,86,216,.2);
+      box-shadow: 0 8px 18px rgba(124,92,230,0.22);
     }
 
-    button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible {
-      outline: 3px solid #bd9cf2;
-      outline-offset: 3px;
+    .page {
+      display: none;
     }
 
-    .page { display: none; }
-    .page.active { display: block; }
+    .page.active {
+      display: block;
+    }
 
-    h1, h2 {
-      color: var(--pink);
-      text-align: center;
+    .panel {
+      padding: 10px 6px 4px;
     }
 
     h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2rem, 6vw, 3rem);
+      text-align: center;
+      margin: 0 0 14px;
+      color: var(--pink);
+      font-size: clamp(2rem, 5vw, 3rem);
     }
 
-    h2 { margin: 0 0 14px; }
+    h2 {
+      text-align: center;
+      margin: 0 0 12px;
+      color: var(--pink);
+      font-size: clamp(1.5rem, 4vw, 2.4rem);
+    }
 
-    .intro, .status, .share-help {
+    .lead {
+      text-align: center;
       color: var(--muted);
       line-height: 1.6;
-      text-align: center;
+      margin: 0 0 18px;
     }
 
-    .field { margin: 20px 0; }
+    .field {
+      margin: 18px 0;
+    }
 
     label {
       display: block;
@@ -118,180 +138,201 @@
     .hint, .file-status {
       margin: 8px 0 0;
       color: var(--muted);
-      font-size: .9rem;
+      font-size: 0.92rem;
       overflow-wrap: anywhere;
     }
 
     .message {
-      min-height: 1.5em;
-      margin: 12px 0;
+      min-height: 1.4em;
+      margin-top: 12px;
       text-align: center;
       line-height: 1.5;
+      font-size: 0.95rem;
     }
 
-    .message.error { color: #b42345; }
-    .message.success { color: #23804a; }
+    .message.error { color: var(--danger); }
+    .message.success { color: var(--success); }
 
     .actions {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 12px;
       margin-top: 20px;
     }
 
-    .action-button, .share-link {
-      display: inline-block;
-      padding: 12px 22px;
-      border: 0;
+    button, .link-btn {
+      appearance: none;
+      border: none;
       border-radius: 999px;
+      padding: 13px 22px;
       color: white;
-      background: linear-gradient(110deg, var(--pink), var(--purple));
+      background: linear-gradient(135deg, var(--pink), var(--purple));
       font: inherit;
       font-weight: 700;
-      text-decoration: none;
       cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 10px 20px rgba(124,92,230,0.18);
     }
 
-    .action-button.secondary {
-      color: var(--ink);
+    button.secondary, .link-btn.secondary {
       background: #f3edf7;
+      color: var(--ink);
+      box-shadow: none;
     }
 
-    .url-box {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      overflow-wrap: anywhere;
+    .preview-box {
       background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-top: 14px;
+      word-break: break-all;
       color: var(--ink);
+    }
+
+    .preview-box a {
+      color: var(--purple);
+      text-decoration: none;
+      word-break: break-all;
     }
 
     .story {
-      min-height: 320px;
+      min-height: 360px;
       display: grid;
       place-items: center;
-      margin-top: 18px;
       padding: 16px;
       border: 1px solid var(--line);
-      border-radius: 18px;
+      border-radius: 20px;
       background: linear-gradient(135deg, #fff8fb, #f6efff);
     }
 
-    .story video {
+    .story video, .story img {
       display: block;
       width: 100%;
-      max-height: 65vh;
-      border-radius: 14px;
+      max-height: 70vh;
+      border-radius: 16px;
       background: #111;
     }
 
-    .story-note {
+    .story .note {
       max-width: 700px;
-      margin: auto;
-      font-size: clamp(1.25rem, 4vw, 2rem);
-      line-height: 1.6;
       text-align: center;
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      line-height: 1.6;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
 
-    .gallery {
+    .story .gallery {
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 14px;
     }
 
-    .gallery img {
-      display: block;
+    .story .gallery img {
       width: 100%;
-      height: 230px;
+      height: 220px;
       object-fit: cover;
       border-radius: 14px;
-      background: #eee8f2;
+      box-shadow: 0 8px 20px rgba(56,40,66,0.12);
     }
 
     .slide-count {
-      margin: 12px 0 0;
-      color: var(--muted);
       text-align: center;
+      color: var(--muted);
+      margin-top: 14px;
     }
 
-    @media (max-width: 520px) {
-      body { padding: 10px; }
-      .step { flex: 1 1 40%; }
-      .story { min-height: 250px; }
-      .gallery img { height: 190px; }
+    @media (max-width: 620px) {
+      .tab {
+        flex: 1 1 40%;
+      }
     }
   </style>
 </head>
 <body>
   <main class="app">
-    <nav class="tabs" aria-label="Birthday story steps">
-      <button class="step active" type="button" data-step="make">🛠️ Make</button>
-      <button class="step" type="button" data-step="seal">🧿 Seal</button>
-      <button class="step" type="button" data-step="sent">📤 Sent</button>
-      <button class="step" type="button" data-step="open">🔓 Open</button>
+    <nav class="tabs" aria-label="Birthday steps">
+      <button class="tab active" type="button" data-step="make">🛠️ Make</button>
+      <button class="tab" type="button" data-step="seal">🧿 Seal</button>
+      <button class="tab" type="button" data-step="sent">📤 Sent</button>
+      <button class="tab" type="button" data-step="open">🔓 Open</button>
     </nav>
 
     <section id="makePage" class="page active">
-      <h1>Make your birthday surprise</h1>
-      <p class="intro">Add a note, photos, and one video. Click Seal to save, then Sent to create your URL.</p>
+      <div class="panel">
+        <h1>Make your birthday surprise</h1>
+        <p class="lead">
+          Add a note, some photos, and one video. Click Seal to save, then Sent to make a URL.
+        </p>
 
-      <div class="field">
-        <label for="noteInput">Birthday note</label>
-        <textarea id="noteInput" placeholder="Happy Birthday!"></textarea>
-      </div>
+        <div class="field">
+          <label for="noteInput">Birthday note</label>
+          <textarea id="noteInput" placeholder="Happy Birthday!"></textarea>
+        </div>
 
-      <div class="field">
-        <label for="photoInput">Photos</label>
-        <input id="photoInput" type="file" accept="image/*" multiple />
-        <p id="photoStatus" class="file-status">No new photos selected.</p>
-      </div>
+        <div class="field">
+          <label for="photoInput">Photos</label>
+          <input id="photoInput" type="file" accept="image/*" multiple />
+          <p id="photoStatus" class="file-status">No photos selected.</p>
+        </div>
 
-      <div class="field">
-        <label for="videoInput">One video (maximum 60 MB)</label>
-        <input id="videoInput" type="file" accept="video/*" />
-        <p id="videoStatus" class="file-status">No new video selected.</p>
-      </div>
+        <div class="field">
+          <label for="videoInput">One video (max 60 MB)</label>
+          <input id="videoInput" type="file" accept="video/*" />
+          <p id="videoStatus" class="file-status">No video selected.</p>
+        </div>
 
-      <p class="hint">If you have already sealed a draft, leaving a file picker empty keeps its saved files.</p>
-      <p id="makeMessage" class="message" role="status"></p>
+        <p id="makeMessage" class="message" role="status"></p>
 
-      <div class="actions">
-        <button id="sealFromMake" class="action-button" type="button">🧿 Seal and save</button>
+        <div class="actions">
+          <button id="sealButton" type="button">🧿 Seal and save</button>
+        </div>
       </div>
     </section>
 
     <section id="sealPage" class="page">
-      <h1>🧿 Sealed</h1>
-      <p id="sealMessage" class="status">Your birthday content is saved as a draft in this browser.</p>
-      <div class="actions">
-        <button id="editButton" class="action-button secondary" type="button">Back to Make</button>
-        <button id="sendFromSeal" class="action-button" type="button">📤 Sent</button>
+      <div class="panel">
+        <h2>🧿 Seal</h2>
+        <p class="lead">Your draft is saved in this browser.</p>
+        <p id="sealMessage" class="message success"></p>
+
+        <div class="actions">
+          <button id="backToMake" class="secondary" type="button">Back to Make</button>
+          <button id="sendButton" type="button">📤 Sent</button>
+        </div>
       </div>
     </section>
 
     <section id="sentPage" class="page">
-      <h1>📤 Sent</h1>
-      <p id="sentMessage" class="status">Your share URL will appear here after submission.</p>
-      <a id="shareUrl" class="url-box" href="#" target="_blank" rel="noopener" hidden></a>
-      <div class="actions">
-        <button id="copyUrlButton" class="action-button secondary" type="button">Copy URL</button>
-        <a id="openUrlButton" class="share-link" href="#" target="_blank" rel="noopener" hidden>Open URL</a>
+      <div class="panel">
+        <h2>📤 Sent</h2>
+        <p id="sentMessage" class="lead">A new URL will appear here after submission.</p>
+
+        <div class="preview-box">
+          <a id="shareLink" href="#" target="_blank" rel="noopener" hidden></a>
+        </div>
+
+        <div class="actions">
+          <button id="copyUrlButton" class="secondary" type="button">Copy URL</button>
+          <a id="openShareLink" class="link-btn" href="#" target="_blank" rel="noopener" hidden>Open URL</a>
+        </div>
       </div>
     </section>
 
     <section id="openPage" class="page">
-      <h1 id="storyHeading">Birthday Surprise 🎉</h1>
-      <p id="openMessage" class="status"></p>
-      <div id="storyContent" class="story"></div>
-      <p id="slideCount" class="slide-count"></p>
-      <div id="storyControls" class="actions">
-        <button id="previousButton" class="action-button secondary" type="button">← Previous</button>
-        <button id="nextButton" class="action-button" type="button">Next →</button>
+      <div class="panel">
+        <h2>🔓 Open</h2>
+        <p id="openMessage" class="lead"></p>
+        <div id="storyContent" class="story"></div>
+        <p id="slideCount" class="slide-count"></p>
+        <div id="openActions" class="actions">
+          <button id="prevButton" class="secondary" type="button">← Previous</button>
+          <button id="nextButton" type="button">Next →</button>
+        </div>
       </div>
     </section>
   </main>
@@ -300,394 +341,42 @@
     (() => {
       "use strict";
 
-      const DB_NAME = "birthdayStoryApp";
-      const STORE_NAME = "records";
-      const DRAFT_ID = "draft";
+      const DB_NAME = "birthday-story-db";
+      const STORE_NAME = "birthday-store";
+      const DRAFT_KEY = "draft";
       const MAX_VIDEO_SIZE = 60 * 1024 * 1024;
 
-      const stepButtons = [...document.querySelectorAll(".step")];
-      const pages = {
+      const pageMap = {
         make: document.getElementById("makePage"),
         seal: document.getElementById("sealPage"),
         sent: document.getElementById("sentPage"),
         open: document.getElementById("openPage")
       };
 
+      const tabs = [...document.querySelectorAll(".tab")];
       const noteInput = document.getElementById("noteInput");
       const photoInput = document.getElementById("photoInput");
       const videoInput = document.getElementById("videoInput");
       const photoStatus = document.getElementById("photoStatus");
       const videoStatus = document.getElementById("videoStatus");
       const makeMessage = document.getElementById("makeMessage");
+      const sealMessage = document.getElementById("sealMessage");
       const sentMessage = document.getElementById("sentMessage");
-      const shareUrl = document.getElementById("shareUrl");
-      const openUrlButton = document.getElementById("openUrlButton");
+      const shareLink = document.getElementById("shareLink");
+      const openShareLink = document.getElementById("openShareLink");
       const storyContent = document.getElementById("storyContent");
-      const storyHeading = document.getElementById("storyHeading");
       const openMessage = document.getElementById("openMessage");
       const slideCount = document.getElementById("slideCount");
-      const previousButton = document.getElementById("previousButton");
+      const prevButton = document.getElementById("prevButton");
       const nextButton = document.getElementById("nextButton");
-      const storyControls = document.getElementById("storyControls");
 
-      let database;
-      let savedDraft = null;
+      let db;
+      let draft = null;
       let activeStory = null;
-      let slideIndex = 0;
-      let mediaUrls = [];
+      let currentSlide = 0;
+      let objectUrls = [];
 
       function showPage(name) {
-        Object.entries(pages).forEach(([key, page]) => {
-          page.classList.toggle("active", key === name);
-        });
-        stepButtons.forEach(button => {
-          button.classList.toggle("active", button.dataset.step === name);
-        });
-      }
-
-      function openDatabase() {
-        return new Promise((resolve, reject) => {
-          const request = indexedDB.open(DB_NAME, 1);
-
-          request.onupgradeneeded = () => {
-            const db = request.result;
-            if (!db.objectStoreNames.contains(STORE_NAME)) {
-              db.createObjectStore(STORE_NAME, { keyPath: "id" });
-            }
-          };
-
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(request.error);
-        });
-      }
-
-      function getRecord(id) {
-        return new Promise((resolve, reject) => {
-          const transaction = database.transaction(STORE_NAME, "readonly");
-          const request = transaction.objectStore(STORE_NAME).get(id);
-          request.onsuccess = () => resolve(request.result || null);
-          request.onerror = () => reject(request.error);
-        });
-      }
-
-      function putRecord(record) {
-        return new Promise((resolve, reject) => {
-          const transaction = database.transaction(STORE_NAME, "readwrite");
-          transaction.objectStore(STORE_NAME).put(record);
-          transaction.oncomplete = () => resolve();
-          transaction.onerror = () => reject(transaction.error);
-          transaction.onabort = () => reject(transaction.error || new Error("Save was interrupted."));
-        });
-      }
-
-      function setMessage(element, text, type = "") {
-        element.textContent = text;
-        element.className = `message ${type}`.trim();
-      }
-
-      function clearStoryUrls() {
-        mediaUrls.forEach(url => URL.revokeObjectURL(url));
-        mediaUrls = [];
-      }
-
-      function savedFileStatus(files, kind) {
-        if (!files || files.length === 0) return `No saved ${kind}.`;
-        return `${files.length} saved ${kind} will be kept unless replaced.`;
-      }
-
-      async function saveDraft() {
-        setMessage(makeMessage, "");
-
-        const note = noteInput.value.trim();
-        const newPhotos = [...(photoInput.files || [])];
-        const newVideo = videoInput.files[0] || null;
-
-        if (!note) {
-          setMessage(makeMessage, "Please write a birthday note.", "error");
-          showPage("make");
-          return false;
-        }
-
-        if (newVideo && newVideo.size > MAX_VIDEO_SIZE) {
-          setMessage(makeMessage, "The video must be 60 MB or smaller.", "error");
-          showPage("make");
-          return false;
-        }
-
-        const photos = newPhotos.length
-          ? newPhotos
-          : savedDraft?.photos || [];
-
-        const video = newVideo || savedDraft?.video || null;
-
-        if (photos.length === 0) {
-          setMessage(makeMessage, "Please select at least one photo.", "error");
-          showPage("make");
-          return false;
-        }
-
-        if (!video) {
-          setMessage(makeMessage, "Please select one video.", "error");
-          showPage("make");
-          return false;
-        }
-
-        try {
-          savedDraft = {
-            note,
-            photos,
-            video,
-            savedAt: new Date().toISOString()
-          };
-
-          await putRecord({ id: DRAFT_ID, data: savedDraft });
-          photoStatus.textContent = savedFileStatus(savedDraft.photos, "photo(s)");
-          videoStatus.textContent = "One saved video will be kept unless replaced.";
-          document.getElementById("sealMessage").textContent =
-            "Your note, photos, and video are sealed and saved in this browser.";
-          showPage("seal");
-          return true;
-        } catch (error) {
-          console.error(error);
-          setMessage(makeMessage, "Could not save. Browser storage may be full.", "error");
-          showPage("make");
-          return false;
-        }
-      }
-
-      async function submitDraft() {
-        if (!savedDraft) {
-          setMessage(makeMessage, "Seal your content before submitting it.", "error");
-          showPage("make");
-          return;
-        }
-
-        try {
-          const id = createId();
-          await putRecord({ id: `submission:${id}`, data: savedDraft });
-
-          const url = new URL(window.location.href);
-          url.hash = `open=${encodeURIComponent(id)}`;
-
-          shareUrl.href = url.toString();
-          shareUrl.textContent = url.toString();
-          shareUrl.hidden = false;
-
-          openUrlButton.href = url.toString();
-          openUrlButton.hidden = false;
-
-          sentMessage.textContent = "Submitted. Copy or open your new URL.";
-          showPage("sent");
-        } catch (error) {
-          console.error(error);
-          sentMessage.textContent = "Could not submit. Browser storage may be full.";
-          showPage("sent");
-        }
-      }
-
-      function createId() {
-        if (crypto.randomUUID) return crypto.randomUUID();
-        return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-      }
-
-      function renderStory(payload, shared = false) {
-        clearStoryUrls();
-        activeStory = payload;
-        slideIndex = 0;
-        storyControls.hidden = false;
-        openMessage.textContent = shared
-          ? "This birthday surprise was shared with you."
-          : "Preview of the saved birthday content.";
-        showPage("open");
-        renderSlide();
-      }
-
-      function renderSlide() {
-        clearStoryUrls();
-        storyContent.replaceChildren();
-
-        if (!activeStory) return;
-
-        if (slideIndex === 0) {
-          storyHeading.textContent = "A Birthday Video 🎥";
-          const video = document.createElement("video");
-          const url = URL.createObjectURL(activeStory.video);
-          mediaUrls.push(url);
-          video.src = url;
-          video.controls = true;
-          video.playsInline = true;
-          video.preload = "metadata";
-          storyContent.appendChild(video);
-        } else if (slideIndex === 1) {
-          storyHeading.textContent = "A Birthday Note 💌";
-          const note = document.createElement("p");
-          note.className = "story-note";
-          note.textContent = activeStory.note;
-          storyContent.appendChild(note);
-        } else {
-          storyHeading.textContent = "Birthday Photos 📸";
-          const gallery = document.createElement("div");
-          gallery.className = "gallery";
-
-          activeStory.photos.forEach((photo, index) => {
-            const image = document.createElement("img");
-            const url = URL.createObjectURL(photo);
-            mediaUrls.push(url);
-            image.src = url;
-            image.alt = `Birthday photo ${index + 1}`;
-            gallery.appendChild(image);
-          });
-
-          storyContent.appendChild(gallery);
-        }
-
-        slideCount.textContent = `Part ${slideIndex + 1} of 3`;
-        previousButton.disabled = slideIndex === 0;
-        previousButton.style.opacity = slideIndex === 0 ? ".5" : "1";
-        nextButton.textContent = slideIndex === 2 ? "Start again ↻" : "Next →";
-      }
-
-      async function openSharedStory(id) {
-        document.body.classList.add("shared-view");
-        stepButtons.forEach(button => button.hidden = true);
-        showPage("open");
-        storyControls.hidden = true;
-        storyHeading.textContent = "Birthday Surprise";
-        storyContent.replaceChildren();
-        openMessage.textContent = "Loading shared birthday surprise…";
-
-        try {
-          const record = await getRecord(`submission:${id}`);
-          if (!record || !record.data) {
-            openMessage.textContent =
-              "This submission is not saved in this browser. Shared links need online storage to work on other devices.";
-            return;
-          }
-
-          renderStory(record.data, true);
-        } catch (error) {
-          console.error(error);
-          openMessage.textContent = "Could not load this birthday surprise.";
-        }
-      }
-
-      stepButtons.forEach(button => {
-        button.addEventListener("click", async () => {
-          const step = button.dataset.step;
-
-          if (step === "make") {
-            showPage("make");
-          } else if (step === "seal") {
-            await saveDraft();
-          } else if (step === "sent") {
-            await submitDraft();
-          } else if (step === "open") {
-            if (!savedDraft) {
-              setMessage(makeMessage, "Seal your content before opening a preview.", "error");
-              showPage("make");
-              return;
-            }
-            renderStory(savedDraft, false);
-          }
-        });
-      });
-
-      document.getElementById("sealFromMake").addEventListener("click", saveDraft);
-      document.getElementById("editButton").addEventListener("click", () => showPage("make"));
-      document.getElementById("sendFromSeal").addEventListener("click", submitDraft);
-
-      photoInput.addEventListener("change", () => {
-        const files = [...(photoInput.files || [])];
-        photoStatus.textContent = files.length
-          ? `${files.length} new photo(s) selected.`
-          : savedFileStatus(savedDraft?.photos, "photo(s)");
-        setMessage(makeMessage, "");
-      });
-
-      videoInput.addEventListener("change", () => {
-        const file = videoInput.files[0];
-
-        if (file && file.size > MAX_VIDEO_SIZE) {
-          videoInput.value = "";
-          videoStatus.textContent = savedDraft?.video
-            ? "The saved video will be kept."
-            : "No video selected.";
-          setMessage(makeMessage, "The video must be 60 MB or smaller.", "error");
-          return;
-        }
-
-        videoStatus.textContent = file
-          ? `Selected: ${file.name}`
-          : savedDraft?.video
-            ? "The saved video will be kept."
-            : "No video selected.";
-
-        setMessage(makeMessage, "");
-      });
-
-      previousButton.addEventListener("click", () => {
-        if (slideIndex > 0) {
-          slideIndex--;
-          renderSlide();
-        }
-      });
-
-      nextButton.addEventListener("click", () => {
-        slideIndex = slideIndex < 2 ? slideIndex + 1 : 0;
-        renderSlide();
-      });
-
-      document.getElementById("copyUrlButton").addEventListener("click", async () => {
-        if (!shareUrl.href || shareUrl.hidden) {
-          sentMessage.textContent = "Submit your sealed content to create a URL first.";
-          return;
-        }
-
-        try {
-          await navigator.clipboard.writeText(shareUrl.href);
-          sentMessage.textContent = "URL copied. You can now share it.";
-        } catch {
-          const range = document.createRange();
-          range.selectNodeContents(shareUrl);
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          selection.addRange(range);
-          sentMessage.textContent = "Select and copy the URL above.";
-        }
-      });
-
-      async function init() {
-        try {
-          database = await openDatabase();
-
-          const match = window.location.hash.match(/(?:^#|&)open=([^&]+)/);
-          if (match) {
-            await openSharedStory(decodeURIComponent(match[1]));
-            return;
-          }
-
-          const record = await getRecord(DRAFT_ID);
-          if (record?.data) {
-            savedDraft = record.data;
-            noteInput.value = savedDraft.note || "";
-            photoStatus.textContent = savedFileStatus(savedDraft.photos, "photo(s)");
-            videoStatus.textContent = "One saved video will be kept unless replaced.";
-          }
-
-          showPage("make");
-        } catch (error) {
-          console.error(error);
-          showPage("make");
-          setMessage(
-            makeMessage,
-            "Browser storage is unavailable. Try a modern browser and host this page over HTTPS.",
-            "error"
-          );
-        }
-      }
-
-      init();
-    })();
-  </script>
-</body>
-</html>
+        Object.entries(pageMap).forEach(([key, page]) => {
+          page.classList.toggle("active", key ===*
+
