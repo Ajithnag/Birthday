@@ -419,7 +419,6 @@
       white-space: pre-wrap;
     }
 
-    /* One-photo-at-a-time carousel */
     .photo-viewer {
       position: relative;
       display: grid;
@@ -429,8 +428,7 @@
       padding: 12px;
       border: 1px solid #f1e2e9;
       border-radius: 22px;
-      background:
-        radial-gradient(circle at 50% 40%, #fff, #fff5f8 70%);
+      background: radial-gradient(circle at 50% 40%, #fff, #fff5f8 70%);
     }
 
     .carousel-photo {
@@ -483,7 +481,6 @@
       text-align: center;
     }
 
-    /* Click-to-zoom lightbox */
     .lightbox {
       position: fixed;
       z-index: 10;
@@ -562,8 +559,6 @@
       text-align: center;
     }
 
-    .center { text-align: center; }
-
     @media (max-width: 680px) {
       .carousel-photo {
         height: min(55vh, 460px);
@@ -641,7 +636,7 @@
             <div class="field">
               <label for="video">Birthday video</label>
               <input id="video" type="file" accept="video/*" required>
-              <p class="hint">Maximum video size: 60 MB.</p>
+              <p class="hint">Maximum video size: 100 MB.</p>
             </div>
 
             <div class="field field-full">
@@ -741,7 +736,7 @@
       const DB_NAME = "BirthdayWishesDB";
       const DB_VERSION = 1;
       const STORE_NAME = "birthdays";
-      const MAX_VIDEO_BYTES = 60 * 1024 * 1024;
+      const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
       const MIN_ZOOM = 1;
       const MAX_ZOOM = 4;
       const ZOOM_STEP = 0.25;
@@ -1145,7 +1140,7 @@
         if (video.size > MAX_VIDEO_BYTES) {
           showNotice(
             formNotice,
-            "The video is larger than 60 MB. Please choose a smaller video.",
+            "The video is larger than 100 MB. Please choose a smaller video.",
             "error"
           );
           return;
