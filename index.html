@@ -12,17 +12,12 @@
       --rose-dark: #c83262;
       --plum: #40243d;
       --muted: #765d73;
-      --white: #fff;
       --page-width: 860px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    [hidden] {
-      display: none !important;
-    }
+    [hidden] { display: none !important; }
 
     body {
       min-height: 100vh;
@@ -33,7 +28,6 @@
         BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    /* The uploaded photos become a soft, repeating background mosaic. */
     .photo-mosaic {
       position: fixed;
       z-index: 0;
@@ -123,9 +117,7 @@
       backdrop-filter: blur(12px);
     }
 
-    .brand-icon {
-      font-size: 1.45rem;
-    }
+    .brand-icon { font-size: 1.45rem; }
 
     .header-caption {
       color: #806b7c;
@@ -179,9 +171,7 @@
       text-transform: uppercase;
     }
 
-    h1, h2, p {
-      margin-top: 0;
-    }
+    h1, h2, p { margin-top: 0; }
 
     h1 {
       margin-bottom: 14px;
@@ -206,9 +196,7 @@
       font-size: 1.05rem;
     }
 
-    .form-section {
-      margin-top: 30px;
-    }
+    .form-section { margin-top: 30px; }
 
     .form-grid {
       display: grid;
@@ -216,13 +204,8 @@
       gap: 20px;
     }
 
-    .field {
-      min-width: 0;
-    }
-
-    .field-full {
-      grid-column: 1 / -1;
-    }
+    .field { min-width: 0; }
+    .field-full { grid-column: 1 / -1; }
 
     label {
       display: block;
@@ -232,8 +215,7 @@
       font-weight: 800;
     }
 
-    input,
-    textarea {
+    input, textarea {
       width: 100%;
       min-height: 50px;
       padding: 13px 15px;
@@ -246,8 +228,7 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    input:focus,
-    textarea:focus {
+    input:focus, textarea:focus {
       border-color: var(--rose);
       box-shadow: 0 0 0 4px rgba(233, 78, 124, 0.13);
     }
@@ -290,14 +271,13 @@
       margin-top: 22px;
     }
 
-    button,
-    .button {
+    button, .button {
       display: inline-flex;
-      min-height: 49px;
+      min-height: 47px;
       align-items: center;
       justify-content: center;
       gap: 9px;
-      padding: 12px 21px;
+      padding: 11px 19px;
       border: 0;
       border-radius: 14px;
       background: linear-gradient(135deg, #f0648e, #d83f70);
@@ -310,8 +290,7 @@
       transition: transform 0.16s ease, box-shadow 0.16s ease;
     }
 
-    button:hover,
-    .button:hover {
+    button:hover, .button:hover {
       transform: translateY(-2px);
       box-shadow: 0 14px 28px rgba(216, 63, 112, 0.27);
     }
@@ -367,14 +346,8 @@
       overflow-wrap: anywhere;
     }
 
-    .generated-link strong {
-      color: var(--rose-dark);
-    }
-
-    .generated-link a {
-      color: var(--rose-dark);
-      font-weight: 750;
-    }
+    .generated-link strong { color: var(--rose-dark); }
+    .generated-link a { color: var(--rose-dark); font-weight: 750; }
 
     .privacy-note {
       margin: 20px 0 0;
@@ -413,9 +386,7 @@
       white-space: nowrap;
     }
 
-    .cake-badge .cake {
-      font-size: 1.55rem;
-    }
+    .cake-badge .cake { font-size: 1.55rem; }
 
     .step-indicator {
       margin-bottom: 15px;
@@ -448,91 +419,180 @@
       white-space: pre-wrap;
     }
 
-    .gallery {
+    /* One-photo-at-a-time carousel */
+    .photo-viewer {
+      position: relative;
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 12px;
+      min-height: 260px;
+      place-items: center;
+      overflow: hidden;
+      padding: 12px;
+      border: 1px solid #f1e2e9;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 50% 40%, #fff, #fff5f8 70%);
+    }
+
+    .carousel-photo {
+      display: block;
+      width: 100%;
+      height: min(62vh, 560px);
+      min-height: 260px;
+      object-fit: contain;
+      border-radius: 14px;
+      cursor: zoom-in;
+      transition: transform 0.2s ease;
+    }
+
+    .carousel-photo:hover {
+      transform: scale(1.015);
+    }
+
+    .photo-instruction {
+      margin: 12px 0 0;
+      text-align: center;
+      color: #806b7c;
+      font-size: 0.86rem;
+    }
+
+    .photo-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
       margin-top: 18px;
     }
 
-    .gallery img {
-      width: 100%;
-      height: 210px;
-      border: 3px solid #fff;
-      border-radius: 16px;
-      object-fit: cover;
-      box-shadow: 0 10px 28px rgba(67, 40, 61, 0.14);
+    .photo-controls button {
+      min-width: 112px;
+    }
+
+    .photo-counter {
+      min-width: 66px;
+      color: var(--plum);
+      font-size: 0.94rem;
+      font-weight: 850;
+      text-align: center;
     }
 
     .closing-message {
       margin: 24px 0 0;
-      text-align: center;
       color: var(--rose-dark);
       font-size: 1.08rem;
       font-weight: 750;
-    }
-
-    .center {
       text-align: center;
     }
 
+    /* Click-to-zoom lightbox */
+    .lightbox {
+      position: fixed;
+      z-index: 10;
+      inset: 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      padding: 18px;
+      background: rgba(25, 16, 25, 0.94);
+      color: #fff;
+    }
+
+    .lightbox-top,
+    .lightbox-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .lightbox-top {
+      justify-content: space-between;
+    }
+
+    .lightbox-title,
+    .lightbox-counter {
+      color: rgba(255,255,255,0.88);
+      font-weight: 750;
+    }
+
+    .lightbox-image-wrap {
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      overflow: auto;
+      touch-action: pan-x pan-y;
+    }
+
+    .lightbox-image {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transform-origin: center center;
+      transition: transform 0.16s ease;
+      cursor: grab;
+    }
+
+    .lightbox-image:active { cursor: grabbing; }
+
+    .lightbox button {
+      min-width: 46px;
+      min-height: 44px;
+      padding: 9px 13px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.14);
+      box-shadow: none;
+      color: #fff;
+    }
+
+    .lightbox button:hover {
+      background: rgba(255,255,255,0.25);
+      box-shadow: none;
+    }
+
+    .lightbox .close-button {
+      min-width: 46px;
+      font-size: 1.15rem;
+    }
+
+    .zoom-level {
+      min-width: 58px;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .center { text-align: center; }
+
     @media (max-width: 680px) {
-      .gallery {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .gallery img {
-        height: 220px;
-      }
-
-      .gallery img:last-child {
-        grid-column: 1 / -1;
-        height: 240px;
+      .carousel-photo {
+        height: min(55vh, 460px);
       }
     }
 
     @media (max-width: 560px) {
-      .site-header {
-        margin-top: 14px;
+      .site-header { margin-top: 14px; }
+      .header-caption { display: none; }
+      main { margin-top: 18px; }
+
+      .form-grid { grid-template-columns: 1fr; }
+      .field-full { grid-column: auto; }
+
+      .birthday-top { flex-direction: column; }
+      .cake-badge { align-self: flex-start; }
+
+      .photo-controls { gap: 8px; }
+      .photo-controls button {
+        min-width: 0;
+        padding-inline: 13px;
       }
 
-      .header-caption {
-        display: none;
-      }
-
-      main {
-        margin-top: 18px;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .field-full {
-        grid-column: auto;
-      }
-
-      .birthday-top {
-        flex-direction: column;
-      }
-
-      .cake-badge {
-        align-self: flex-start;
-      }
-
-      .gallery {
-        gap: 9px;
-      }
-
-      .gallery img {
-        height: 170px;
-      }
+      .lightbox { padding: 10px; }
+      .lightbox-title { font-size: 0.85rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
+      *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         scroll-behavior: auto !important;
@@ -565,8 +625,7 @@
         <h1>A birthday moment<br>they’ll always remember.</h1>
         <p class="intro">
           Bring together their favorite memories, a birthday video, and a message
-          from the heart. Their photos will create a soft picture-mosaic backdrop
-          for the surprise.
+          from the heart. Their photos create a soft picture-mosaic backdrop.
         </p>
       </div>
 
@@ -576,7 +635,7 @@
             <div class="field">
               <label for="photos">Five birthday photos</label>
               <input id="photos" type="file" accept="image/*" multiple required>
-              <p class="hint">Select exactly five photos. They’ll also appear as a subtle background mosaic.</p>
+              <p class="hint">Select exactly five photos. They’ll also appear in the background mosaic.</p>
             </div>
 
             <div class="field">
@@ -597,7 +656,7 @@
           </div>
 
           <div class="button-row">
-            <button id="createButton" type="submit">Create their surprise <span aria-hidden="true">→</span></button>
+            <button id="createButton" type="submit">Create their surprise →</button>
           </div>
         </form>
 
@@ -607,7 +666,7 @@
         <p class="privacy-note">
           This single-file version saves the birthday and media in this browser.
           The generated link works in the same browser and on the same device;
-          it does not upload the files to an online server.
+          it does not upload files to an online server.
         </p>
       </div>
     </section>
@@ -627,7 +686,7 @@
         </div>
 
         <div class="button-row">
-          <button type="submit">Open my surprise <span aria-hidden="true">→</span></button>
+          <button type="submit">Open my surprise →</button>
         </div>
       </form>
 
@@ -654,6 +713,27 @@
     </section>
   </main>
 
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true"
+       aria-label="Photo viewer" hidden>
+    <div class="lightbox-top">
+      <span class="lightbox-title">Birthday memory</span>
+      <span id="lightboxCounter" class="lightbox-counter"></span>
+      <button id="closeLightbox" class="close-button" type="button"
+              aria-label="Close photo viewer">✕</button>
+    </div>
+
+    <div class="lightbox-image-wrap">
+      <img id="lightboxImage" class="lightbox-image" alt="Enlarged birthday memory">
+    </div>
+
+    <div class="lightbox-controls">
+      <button id="zoomOut" type="button" aria-label="Zoom out">−</button>
+      <span id="zoomLevel" class="zoom-level">100%</span>
+      <button id="zoomIn" type="button" aria-label="Zoom in">+</button>
+      <button id="zoomReset" type="button">Reset</button>
+    </div>
+  </div>
+
   <script>
     (() => {
       "use strict";
@@ -662,6 +742,9 @@
       const DB_VERSION = 1;
       const STORE_NAME = "birthdays";
       const MAX_VIDEO_BYTES = 60 * 1024 * 1024;
+      const MIN_ZOOM = 1;
+      const MAX_ZOOM = 4;
+      const ZOOM_STEP = 0.25;
 
       const createScreen = document.getElementById("createScreen");
       const entryScreen = document.getElementById("entryScreen");
@@ -677,10 +760,19 @@
       const photoInput = document.getElementById("photos");
       const photoMosaic = document.getElementById("photoMosaic");
 
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImage = document.getElementById("lightboxImage");
+      const lightboxCounter = document.getElementById("lightboxCounter");
+      const zoomLevelLabel = document.getElementById("zoomLevel");
+
       let birthday = null;
       let currentStep = 0;
+      let currentPhotoIndex = 0;
+      let zoomLevel = 1;
       let mosaicUrls = [];
       let contentUrls = [];
+      let lightboxUrl = null;
+      let lastFocusedElement = null;
 
       function openDatabase() {
         return new Promise((resolve, reject) => {
@@ -761,8 +853,8 @@
       function setMosaic(files) {
         clearMosaic();
 
-        const photos = Array.from(files || []).filter((file) =>
-          file && file.type && file.type.startsWith("image/")
+        const photos = Array.from(files || []).filter(
+          (file) => file && file.type && file.type.startsWith("image/")
         );
 
         if (!photos.length) return;
@@ -771,7 +863,8 @@
 
         const tileCount = Math.max(
           48,
-          Math.ceil(window.innerWidth / 80) * Math.ceil(window.innerHeight / 85)
+          Math.ceil(window.innerWidth / 80) *
+          Math.ceil(window.innerHeight / 85)
         );
 
         const fragment = document.createDocumentFragment();
@@ -799,7 +892,8 @@
         let age = today.getFullYear() - dob.getFullYear();
         const birthdayHasPassed =
           today.getMonth() > dob.getMonth() ||
-          (today.getMonth() === dob.getMonth() && today.getDate() >= dob.getDate());
+          (today.getMonth() === dob.getMonth() &&
+           today.getDate() >= dob.getDate());
 
         if (!birthdayHasPassed) age--;
         return Math.max(0, age);
@@ -827,6 +921,55 @@
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;")
           .replace(/'/g, "&#039;");
+      }
+
+      function renderPhotoCarousel() {
+        const photo = birthday.photos[currentPhotoIndex];
+        const imageUrl = URL.createObjectURL(photo);
+        contentUrls.push(imageUrl);
+
+        stepContent.innerHTML = `
+          <div class="step-indicator">Step 3 of 3 · Your favorite memories</div>
+          <div class="photo-viewer">
+            <img class="carousel-photo" src="${imageUrl}"
+                 alt="Birthday memory ${currentPhotoIndex + 1}"
+                 title="Click to zoom in">
+          </div>
+          <p class="photo-instruction">Click the photo to view it larger and zoom in.</p>
+          <div class="photo-controls" aria-label="Photo navigation">
+            <button class="button-secondary" id="previousPhoto" type="button">← Previous</button>
+            <span class="photo-counter" aria-live="polite">
+              ${currentPhotoIndex + 1} / ${birthday.photos.length}
+            </span>
+            <button class="button-secondary" id="nextPhoto" type="button">Next →</button>
+          </div>
+          <p class="closing-message">Wishing you a day as wonderful as you are. 💖</p>
+        `;
+
+        stepContent.querySelector(".carousel-photo").addEventListener("click", () => {
+          openLightbox(currentPhotoIndex);
+        });
+
+        document.getElementById("previousPhoto").addEventListener("click", () => {
+          changePhoto(-1);
+        });
+
+        document.getElementById("nextPhoto").addEventListener("click", () => {
+          changePhoto(1);
+        });
+
+        nextButton.textContent = "Replay surprise ↺";
+      }
+
+      function changePhoto(direction) {
+        if (!birthday || !birthday.photos.length) return;
+
+        currentPhotoIndex =
+          (currentPhotoIndex + direction + birthday.photos.length) %
+          birthday.photos.length;
+
+        clearContentUrls();
+        renderPhotoCarousel();
       }
 
       function showBirthdayStep() {
@@ -863,38 +1006,65 @@
           return;
         }
 
-        const gallery = document.createElement("div");
-        gallery.className = "gallery";
-
-        birthday.photos.forEach((photo, index) => {
-          const image = document.createElement("img");
-          const imageUrl = URL.createObjectURL(photo);
-          contentUrls.push(imageUrl);
-          image.src = imageUrl;
-          image.alt = "Birthday memory " + (index + 1);
-          image.loading = "lazy";
-          gallery.appendChild(image);
-        });
-
-        stepContent.innerHTML = `
-          <div class="step-indicator">Step 3 of 3 · Your favorite memories</div>
-        `;
-        stepContent.appendChild(gallery);
-
-        const closing = document.createElement("p");
-        closing.className = "closing-message";
-        closing.textContent = "Wishing you a day as wonderful as you are. 💖";
-        stepContent.appendChild(closing);
-
-        nextButton.textContent = "Watch again ↺";
+        renderPhotoCarousel();
       }
 
-      function showBirthdayPage() {
+      function openBirthdayPage() {
         createScreen.hidden = true;
         entryScreen.hidden = true;
         wishScreen.hidden = false;
         currentStep = 0;
+        currentPhotoIndex = 0;
         showBirthdayStep();
+      }
+
+      function updateZoom() {
+        lightboxImage.style.transform = "scale(" + zoomLevel + ")";
+        zoomLevelLabel.textContent = Math.round(zoomLevel * 100) + "%";
+      }
+
+      function openLightbox(photoIndex) {
+        if (!birthday || !birthday.photos[photoIndex]) return;
+
+        lastFocusedElement = document.activeElement;
+        currentPhotoIndex = photoIndex;
+        zoomLevel = 1;
+
+        if (lightboxUrl) URL.revokeObjectURL(lightboxUrl);
+        lightboxUrl = URL.createObjectURL(birthday.photos[currentPhotoIndex]);
+
+        lightboxImage.src = lightboxUrl;
+        lightboxImage.alt = "Birthday memory " + (currentPhotoIndex + 1);
+        lightboxCounter.textContent =
+          (currentPhotoIndex + 1) + " / " + birthday.photos.length;
+
+        updateZoom();
+        lightbox.hidden = false;
+        document.body.style.overflow = "hidden";
+        document.getElementById("closeLightbox").focus();
+      }
+
+      function closeLightbox() {
+        if (lightbox.hidden) return;
+
+        lightbox.hidden = true;
+        document.body.style.overflow = "";
+
+        if (lightboxUrl) {
+          URL.revokeObjectURL(lightboxUrl);
+          lightboxUrl = null;
+        }
+
+        lightboxImage.removeAttribute("src");
+
+        if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+          lastFocusedElement.focus();
+        }
+      }
+
+      function adjustZoom(amount) {
+        zoomLevel = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoomLevel + amount));
+        updateZoom();
       }
 
       async function loadBirthdayLink() {
@@ -973,7 +1143,11 @@
         }
 
         if (video.size > MAX_VIDEO_BYTES) {
-          showNotice(formNotice, "The video is larger than 60 MB. Please choose a smaller video.", "error");
+          showNotice(
+            formNotice,
+            "The video is larger than 60 MB. Please choose a smaller video.",
+            "error"
+          );
           return;
         }
 
@@ -1055,7 +1229,7 @@
 
           showNotice(
             formNotice,
-            "Saved! Your uploaded photos are now shown in the background mosaic.",
+            "Saved! Your photos are now shown in the background mosaic.",
             "success"
           );
         } catch (error) {
@@ -1067,19 +1241,18 @@
           );
         } finally {
           createButton.disabled = false;
-          createButton.innerHTML = 'Create their surprise <span aria-hidden="true">→</span>';
+          createButton.textContent = "Create their surprise →";
         }
       });
 
       entryForm.addEventListener("submit", (event) => {
         event.preventDefault();
-
         if (!birthday) return;
 
         const enteredDob = document.getElementById("entryDob").value;
 
         if (enteredDob === birthday.dob) {
-          showBirthdayPage();
+          openBirthdayPage();
         } else {
           showNotice(
             entryNotice,
@@ -1090,14 +1263,57 @@
       });
 
       nextButton.addEventListener("click", () => {
-        currentStep = currentStep < 2 ? currentStep + 1 : 0;
-        showBirthdayStep();
+        if (currentStep < 2) {
+          currentStep++;
+          currentPhotoIndex = 0;
+          showBirthdayStep();
+        } else {
+          currentStep = 0;
+          currentPhotoIndex = 0;
+          showBirthdayStep();
+        }
+      });
+
+      document.getElementById("zoomIn").addEventListener("click", () => {
+        adjustZoom(ZOOM_STEP);
+      });
+
+      document.getElementById("zoomOut").addEventListener("click", () => {
+        adjustZoom(-ZOOM_STEP);
+      });
+
+      document.getElementById("zoomReset").addEventListener("click", () => {
+        zoomLevel = 1;
+        updateZoom();
+      });
+
+      document.getElementById("closeLightbox").addEventListener("click", closeLightbox);
+
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) closeLightbox();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (lightbox.hidden) return;
+
+        if (event.key === "Escape") {
+          closeLightbox();
+        } else if (event.key === "+" || event.key === "=") {
+          adjustZoom(ZOOM_STEP);
+        } else if (event.key === "-") {
+          adjustZoom(-ZOOM_STEP);
+        } else if (event.key === "0") {
+          zoomLevel = 1;
+          updateZoom();
+        }
       });
 
       window.addEventListener("hashchange", loadBirthdayLink);
+
       window.addEventListener("beforeunload", () => {
         clearMosaic();
         clearContentUrls();
+        if (lightboxUrl) URL.revokeObjectURL(lightboxUrl);
       });
 
       loadBirthdayLink();
